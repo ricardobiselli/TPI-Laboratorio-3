@@ -4,7 +4,6 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 
 
-
 const Login = ({baseData, isLoggin}) => {
 
     const navigate = useNavigate();
@@ -28,7 +27,7 @@ const Login = ({baseData, isLoggin}) => {
         event.preventDefault();
 
         const user = baseData.find((user) => (
-        user.email.toLowerCase() === emailEntered.toLowerCase() &&  
+        user.email === emailEntered &&  
         user.password.toLowerCase() === passEntered.toLowerCase()))
         
         if(user){
