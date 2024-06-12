@@ -15,3 +15,13 @@ export const getProductById = async (id) => {
     const response = await api.get(`/product/${id}`); //GetbyId
     return response.data;
 };
+
+export const addProduct = async (productObject) => {//agregar producto
+    try {
+        const response = await api.post('/product', productObject);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
+};
