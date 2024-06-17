@@ -7,9 +7,9 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const Header = ({isLogged}) => {
+const Header = ({ isLogged, onSearchSaved}) => {
   const navigate = useNavigate();
-
+  const [enteredSearch, setEnteredSearch] = useState("");
 
   const handleHomeClick = () => navigate("/");
   const handleProductsClick = () => navigate("/products");
@@ -17,6 +17,10 @@ const Header = ({isLogged}) => {
 
   const handleLoginClick = () => navigate("/login");
   const handleRegisterClick = () => navigate("/register");
+
+  const handleSearch = () => {
+    onSearchSaved(enteredSearch);
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -39,8 +43,10 @@ const Header = ({isLogged}) => {
                 className="me-2"
                 aria-label="Search"
                 style={{ minWidth: "150px", maxWidth: "100%" }}
+                onChange={(e) => setEnteredSearch(e.target.value)}
+                value={enteredSearch}
               />
-              <Button variant="success" className="me-2">
+              <Button variant="success" className="me-2" onClick={handleSearch}>
                 <i className="fa-brands fa-searchengin"></i>
               </Button>
             </Form>
@@ -52,7 +58,7 @@ const Header = ({isLogged}) => {
               style={{ maxWidth: "140px" }}
               onClick={handleLoginClick}
             >
-              {isLogged? "Cerrar Sesión" : "Iniciar Sesión"}
+              {isLogged ? "Cerrar Sesión" : "Iniciar Sesión"}
             </Button>
             <Button
               variant="primary"
@@ -70,7 +76,7 @@ const Header = ({isLogged}) => {
 };
 
 Header.propTypes = {
-    isLogged: PropTypes.bool,
+  isLogged: PropTypes.bool,
 };
 
 export default Header;

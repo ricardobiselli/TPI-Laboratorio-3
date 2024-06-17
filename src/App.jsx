@@ -21,10 +21,14 @@ const data = [{
 },
 ]
 
+const dataProducts = [{name: "procesador i5"}, {name: "RAM 8gb"}]
+
+
 function App() {
 
   const [dataUsers, setDataUsers] = useState(data);
   const [isLogged, setIsLogged] = useState(false);
+  const [product, setProduct] = useState(dataProducts);
 
   const stateLogin = (data) => {
     setIsLogged(data);
@@ -34,10 +38,17 @@ function App() {
     setDataUsers((prev) => [...prev, data]);
   };
 
+  const onSearchSavedProduct = (data) => {
+    const filteredProduct = product.filter((p) =>
+        p.name.toLowerCase().includes(data.toLowerCase())
+    );
+    setProduct(filteredProduct);
+};
+
   return (
     <div>
       <BrowserRouter>
-        <Header isLogged={isLogged} />
+        <Header isLogged={isLogged} onSearchSaved={onSearchSavedProduct} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login baseData={dataUsers} isLoggin={stateLogin} />} />
