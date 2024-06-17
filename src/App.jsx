@@ -4,7 +4,9 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header";
 import PcBuilder from "./components/PcBuilder/PcBuilder";
 import Home from "./components/Home/Home";
-import Products from "./components/Products/Products";
+import Products from "./components/ProductList/ProductList";
+import AddProductForm from "./components/AddProduct/AddProduct";
+import Clients from "./components/ClientsList/ClientsList"
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/pc-builder" element={<PcBuilder />} />
           <Route path="/Products" element={<Products />}/>
+          <Route path="/add-product-form" element={<AddProductForm />} /> {/* boton temporal, solo debe ser visible para el admin */}
+          <Route path="/clients" element ={<Clients/>}/>
         </Routes>
       </BrowserRouter>
     </div>

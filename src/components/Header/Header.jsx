@@ -14,6 +14,7 @@ const Header = () => {
 
   const handleLoginClick = () => navigate("/login");
   const handleRegisterClick = () => navigate("/register");
+  const handleAddProductClick = () => navigate("/add-product-form");
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -24,6 +25,7 @@ const Header = () => {
           <Nav className="me-auto my-2 my-lg-0">
             <Nav.Link onClick={handleProductsClick}>Productos</Nav.Link>
             <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
+            <Nav.Link onClick={handleAddProductClick}>Agregar producto</Nav.Link> {/*boton para el admin*/ }
           </Nav>
           <div className="d-flex flex-grow-1 justify-content-center">
             <Form

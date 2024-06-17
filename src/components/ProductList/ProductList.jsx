@@ -1,4 +1,4 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getProducts } from '../../api/ApiConnection';
 import { Container, Card, ListGroup } from 'react-bootstrap';
 
@@ -6,16 +6,17 @@ const Products = () => {
   const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchProducts = async () => { 
       try {
         const data = await getProducts();
-        setProducts(data);
+        console.log('data', data);
+        setProducts(data.$values || []); 
       } catch (error) {
         console.error('fetch products failed!!!', error);
       }
     };
 
-    fetchProducts();
+    fetchProducts(); 
   }, []);
 
   return (
@@ -44,4 +45,3 @@ const Products = () => {
 };
 
 export default Products;
-

@@ -7,21 +7,26 @@ const api = axios.create({
 
 // Endpoints:
 export const getProducts = async () => {
-    const response = await api.get('/product'); //todos los productos
+    const response = await api.get('/products'); //todos los productos
     return response.data;
 };
 
 export const getProductById = async (id) => {
-    const response = await api.get(`/product/${id}`); //GetbyId
+    const response = await api.get(`/products/${id}`); //GetbyId
     return response.data;
 };
 
 export const addProduct = async (productObject) => {//agregar producto
     try {
-        const response = await api.post('/product', productObject);
+        const response = await api.post('/products', productObject);
         return response.data;
     } catch (error) {
         console.error('Error adding product:', error);
         throw error;
     }
 };
+
+export const getClients = async ()=>{
+    const response = await api.get('/clients');
+    return response.data;
+}
