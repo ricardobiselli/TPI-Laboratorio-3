@@ -2,13 +2,33 @@ import { Button, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import { getClient } from "../../api/ApiConnection";
+import { useEffect } from "react";
 
 
-const Login = ({baseData, isLoggin}) => {
+const Login = ({isLoggin}) => {
+
+    const [client, setClient] = useState([]);
 
     const navigate = useNavigate();
+
     const [emailEntered, setEmailEntered] = useState("");
     const [passEntered, setPassEntered] = useState("");
+    
+
+    useEffect(() => {
+        const fetchClient = async () => { 
+          try {
+            const data = await getClient();
+            console.log('data', data);
+            setClient(data.$values || []); 
+          } catch (error) {
+            console.error('fetch client failed!!!', error);
+          }
+        };
+    
+        fetchClient(); 
+      }, []);
 
     const clickHandler = () => {
         navigate("/");
@@ -26,9 +46,9 @@ const Login = ({baseData, isLoggin}) => {
     const submitUser = (event) => {
         event.preventDefault();
 
-        const user = baseData.find((user) => (
-        user.email === emailEntered &&  
-        user.password.toLowerCase() === passEntered.toLowerCase()))
+        const user = client.find((user) => (
+        user.email == emailEntered &&  
+        user.password == passEntered))
         
         if(user){
             isLoggin(true);
@@ -70,7 +90,6 @@ const Login = ({baseData, isLoggin}) => {
 
 
 Login.propTypes = {
-    baseData: PropTypes.array,
     isLoggin: PropTypes.func.isRequired,
 };
 
