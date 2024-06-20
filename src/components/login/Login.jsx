@@ -32,7 +32,6 @@ const Login = ({isLoggin}) => {
 
     const clickHandler = () => {
         navigate("/");
-        isLoggin(false);
     };
 
     const emailHandler = (e) => {
@@ -51,7 +50,7 @@ const Login = ({isLoggin}) => {
         user.password == passEntered))
         
         if(user){
-            isLoggin(true);
+            isLoggin();
             navigate("/"); 
         } else {window.alert("Usuario o contraseña inválidos")
         setEmailEntered("");

@@ -11,26 +11,30 @@ function App() {
 
   const [isLogged, setIsLogged] = useState(false);
 
-  const stateLogin = (data) => {
-    setIsLogged(data);
-  }
+  const stateLogin = () => {
+    setIsLogged(true);
+  };
+
+  const handleLogout = () => {
+    setIsLogged(false);
+  };
 
 
   const onSearchSavedProduct = (data) => {
     const filteredProduct = product.filter((p) =>
-        p.name.toLowerCase().includes(data.toLowerCase())
+      p.name.toLowerCase().includes(data.toLowerCase())
     );
     setProduct(filteredProduct);
-};
+  };
 
   return (
     <div>
       <BrowserRouter>
-        <Header isLogged={isLogged} onSearchSaved={onSearchSavedProduct} />
+        <Header isLogged={isLogged} onLogout={handleLogout} onSearchSaved={onSearchSavedProduct} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login isLoggin={stateLogin} />} />
-          <Route path="/register" element={<Register/>} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </BrowserRouter>
     </div>

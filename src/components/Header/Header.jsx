@@ -7,7 +7,8 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const Header = ({ isLogged, onSearchSaved}) => {
+const Header = ({ isLogged, onLogout, onSearchSaved }) => {
+
   const navigate = useNavigate();
   const [enteredSearch, setEnteredSearch] = useState("");
 
@@ -15,8 +16,24 @@ const Header = ({ isLogged, onSearchSaved}) => {
   const handleProductsClick = () => navigate("/products");
   const handlePcBuilderClick = () => navigate("/pc-builder");
 
-  const handleLoginClick = () => navigate("/login");
-  const handleRegisterClick = () => navigate("/register");
+  const handleLoginClick = () => {
+    if (isLogged) {
+      onLogout();
+    }
+    else {
+      navigate("/login");
+    };
+  };
+
+  const handleRegisterClick = () => 
+    {
+      if (isLogged) {
+        window.alert("Usted ya se encuentra registrado");
+      }
+      else {
+        navigate("/register");
+      };
+    };
 
   const handleSearch = () => {
     onSearchSaved(enteredSearch);
@@ -75,8 +92,11 @@ const Header = ({ isLogged, onSearchSaved}) => {
   );
 };
 
+
 Header.propTypes = {
   isLogged: PropTypes.bool,
+  onLogout: PropTypes.func.isRequired,
+  onSearchSaved: PropTypes.func.isRequired,
 };
 
 export default Header;
