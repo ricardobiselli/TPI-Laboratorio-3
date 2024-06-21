@@ -5,7 +5,7 @@ import { getProductById, updateProduct } from '../../api/ApiConnection';
 import { getCart, removeFromCart, clearCart } from '../../utils/cart';
 
 const ShoppingCart = () => {
-    
+
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
 
@@ -13,7 +13,7 @@ const ShoppingCart = () => {
         setCart(getCart());
     }, []);
 
-    const total = cart.reduce((sum, product) => sum + product.price * product.quantity, 0);
+    const total = cart.reduce((sum, product) => sum + product.price * product.stock, 0);
 
     const handleRemoveFromCart = (productId) => {
         const updatedCart = removeFromCart(productId);
@@ -24,7 +24,7 @@ const ShoppingCart = () => {
         try {
             for (const cartItem of cart) {
                 const product = await getProductById(cartItem.id);
-                const updatedStock = product.stock - cartItem.quantity;
+                const updatedStock = product.stock - cartItem.stock;
 
                 if (updatedStock < 0) {
                     alert(`No hay suficiente stock para ${product.name}`);
@@ -58,7 +58,7 @@ const ShoppingCart = () => {
                                 <Col>{product.name}</Col>
                                 <Col>${product.price}</Col>
                                 <Col>
-                                    <Badge bg="secondary">{product.quantity}</Badge>
+                                    <Badge bg="secondary">{product.stock}</Badge>
                                 </Col>
                                 <Col>
                                     <Button variant="danger" onClick={() => handleRemoveFromCart(product.id)}>

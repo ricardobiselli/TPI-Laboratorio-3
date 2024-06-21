@@ -1,14 +1,14 @@
 //Funciones del Cart del LocalStorage
-//utilizados para el componente de elegir productos al carrito y en finalizar la compra.
+//utilizados para el componente de elegir productos al carrito (product list) y en finalizar la compra (shoppingcart)
 
 export const addToCart = (product) => {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     const existingProduct = cart.find(item => item.id === product.id);
 
     if (existingProduct) {
-        existingProduct.quantity += 1;
+        existingProduct.stock += 1;
     } else {
-        cart.push({ ...product, quantity: 1 });
+        cart.push({ ...product, stock: 1 });
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -20,7 +20,18 @@ export const getCart = () => {
 
 export const removeFromCart = (productId) => {
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    cart = cart.filter(item => item.id !== productId);
+
+    cart = cart.map(item => {
+        if (item.id === productId) {
+            if (item.stock > 1) {
+                return { ...item, stock: item.stock - 1 };
+            } else {
+                return null; 
+            }
+        }
+        return item;
+    }).filter(item => item !== null);
+
     localStorage.setItem('cart', JSON.stringify(cart));
     return cart;
 };
