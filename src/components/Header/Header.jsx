@@ -4,16 +4,37 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useState } from "react";
 
-const Header = () => {
+const Header = ({ isLogged, onLogout, onSearchSaved }) => {
   const navigate = useNavigate();
+  const [enteredSearch, setEnteredSearch] = useState("");
 
   const handleHomeClick = () => navigate("/");
   const handleProductsClick = () => navigate("/products");
   const handlePcBuilderClick = () => navigate("/pc-builder");
 
-  const handleLoginClick = () => navigate("/login");
-  const handleRegisterClick = () => navigate("/register");
+  const handleLoginClick = () => {
+    if (isLogged) {
+      onLogout();
+    } else {
+      navigate("/login");
+    }
+  };
+
+  const handleRegisterClick = () => {
+    if (isLogged) {
+      window.alert("Usted ya se encuentra registrado");
+    } else {
+      navigate("/register");
+    }
+  };
+
+  const handleSearch = () => {
+    onSearchSaved(enteredSearch);
+  };
+
   const handleAddProductClick = () => navigate("/add-product-form");
 
   return (
@@ -25,7 +46,10 @@ const Header = () => {
           <Nav className="me-auto my-2 my-lg-0">
             <Nav.Link onClick={handleProductsClick}>Productos</Nav.Link>
             <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
-            <Nav.Link onClick={handleAddProductClick}>Agregar producto</Nav.Link> {/*boton para el admin*/ }
+            <Nav.Link onClick={handleAddProductClick}>
+              Agregar producto
+            </Nav.Link>{" "}
+            {/*boton para el admin*/}
           </Nav>
           <div className="d-flex flex-grow-1 justify-content-center">
             <Form
@@ -38,8 +62,10 @@ const Header = () => {
                 className="me-2"
                 aria-label="Search"
                 style={{ minWidth: "150px", maxWidth: "100%" }}
+                onChange={(e) => setEnteredSearch(e.target.value)}
+                value={enteredSearch}
               />
-              <Button variant="success" className="me-2">
+              <Button variant="success" className="me-2" onClick={handleSearch}>
                 <i className="fa-brands fa-searchengin"></i>
               </Button>
             </Form>
@@ -51,7 +77,7 @@ const Header = () => {
               style={{ maxWidth: "140px" }}
               onClick={handleLoginClick}
             >
-              Loguearse
+              {isLogged ? "Cerrar Sesión" : "Iniciar Sesión"}
             </Button>
             <Button
               variant="primary"
@@ -66,6 +92,12 @@ const Header = () => {
       </Container>
     </Navbar>
   );
+};
+
+Header.propTypes = {
+  isLogged: PropTypes.bool,
+  onLogout: PropTypes.func.isRequired,
+  onSearchSaved: PropTypes.func.isRequired,
 };
 
 export default Header;
