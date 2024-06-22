@@ -30,3 +30,8 @@ export const getClients = async ()=>{
     const response = await api.get('/clients');
     return response.data;
 }
+
+export const getAdmins = async ()=>{
+    const response = await api.get('/admins');
+    return response.data;
+}
