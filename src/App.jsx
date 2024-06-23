@@ -8,6 +8,10 @@ import Products from "./components/ProductList/ProductList";
 import AddProductForm from "./components/AddProduct/AddProduct";
 import Clients from "./components/ClientsList/ClientsList"
 import Admins from "./components/AdminsList/AdminsList"
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
+
 
 function App() {
   return (
@@ -21,6 +25,9 @@ function App() {
           <Route path="/add-product-form" element={<AddProductForm />} /> {/* boton temporal, solo debe ser visible para el admin */}
           <Route path="/clients" element ={<Clients/>}/>
           <Route path="/admins" element={<Admins/>}/>
+          <Route path="/login" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+          <Route path="/shopping-cart" element={<ShoppingCart/>}/>
         </Routes>
       </BrowserRouter>
     </div>
