@@ -11,13 +11,21 @@ import Admins from "./components/AdminsList/AdminsList"
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
-
+import { useState } from "react";
+import ProductSearch from "./components/ProductSearch/ProductSearch";
 
 function App() {
+
+  const [searchProduct, setSearchProduct] = useState("");
+
+  const onSearchSavedProduct = (product) => {
+    setSearchProduct(product);
+  }
+
   return (
     <div>
       <BrowserRouter>
-        <Header />
+        <Header onSearchSaved={onSearchSavedProduct} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pc-builder" element={<PcBuilder />} />
@@ -28,6 +36,7 @@ function App() {
           <Route path="/login" element={<Login/>} />
           <Route path="/register" element={<Register/>} />
           <Route path="/shopping-cart" element={<ShoppingCart/>}/>
+          <Route path="/product-search" element={<ProductSearch searchProduct={searchProduct}/>}/>
         </Routes>
       </BrowserRouter>
     </div>

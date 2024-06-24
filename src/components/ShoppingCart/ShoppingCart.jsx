@@ -12,7 +12,7 @@ const ShoppingCart = () => {
         setCart(getCart());
     }, []);
 
-    const total = cart.reduce((sum, product) => sum + product.price * product.stock, 0);
+    const total = cart.reduce((sum, product) => sum + product.price * product.stockQuantity, 0);
 
     const handleRemoveFromCart = (productId) => {
         const updatedCart = removeFromCart(productId);
@@ -27,14 +27,14 @@ const ShoppingCart = () => {
         try {
             for (const cartItem of cart) {
                 const product = await getProductById(cartItem.id);
-                const updatedStock = product.stock - cartItem.stock;
+                const updatedStock = product.stockQuantity - cartItem.stockQuantity;
 
                 if (updatedStock < 0) {
                     alert(`No hay suficiente stock para ${product.name}`);
                     return;
                 }
 
-                const updatedProduct = { ...product, stock: updatedStock };
+                const updatedProduct = { ...product, stockQuantity: updatedStock };
                 await updateProduct(product.id, updatedProduct);
             }
 
@@ -66,7 +66,7 @@ const ShoppingCart = () => {
                                     <Col>{product.name}</Col>
                                     <Col className="text-end">${product.price}</Col>
                                     <Col className="text-end">
-                                        <Badge bg="secondary">{product.stock}</Badge>
+                                        <Badge bg="secondary">{product.stockQuantity}</Badge>
                                     </Col>
                                     <Col className="text-end">
                                         <Button variant="danger" size="sm" onClick={() => handleRemoveFromCart(product.id)}>

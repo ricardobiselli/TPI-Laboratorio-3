@@ -21,10 +21,14 @@ const Products = () => {
   }, []);
 
   const handleAddToCart = (product) => {
-    addToCart(product);
-    alert(`${product.name} agregado al carrito`);
+    if (product.stockQuantity > 0) {
+      addToCart(product);
+      alert(`${product.name} agregado al carrito`);
+    } else {
+      alert(`Lo sentimos, ${product.name} está fuera de stock`);
+    }
   }
-
+  
   return (
     <Container>
       <h1 className="my-4">Product List - no login required</h1>

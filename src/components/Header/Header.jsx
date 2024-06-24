@@ -4,8 +4,15 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import PropTypes from "prop-types";
 
-const Header = () => {
+
+const Header = ({onSearchSaved}) => {
+
+  const [enteredSearch, setEnteredSearch] = useState("");
+
+
   const navigate = useNavigate();
 
   const handleHomeClick = () => navigate("/");
@@ -16,6 +23,11 @@ const Header = () => {
   const handleRegisterClick = () => navigate("/register");
   const handleAddProductClick = () => navigate("/add-product-form");
   const handleCartClick = () => navigate("/shopping-cart")
+
+  const handleSearch = () => {
+    onSearchSaved(enteredSearch);
+    navigate("/product-search")
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -39,8 +51,10 @@ const Header = () => {
                 className="me-2"
                 aria-label="Search"
                 style={{ minWidth: "150px", maxWidth: "100%" }}
+                onChange={(e) => setEnteredSearch(e.target.value)}
+                value={enteredSearch}
               />
-              <Button variant="success" className="me-2">
+              <Button variant="success" className="me-2" onClick={handleSearch}>
                 <i className="fa-brands fa-searchengin"></i>
               </Button>
             </Form>
@@ -83,5 +97,10 @@ const Header = () => {
     </Navbar>
   );
 };
+
+Header.propTypes = {
+  onSearchSaved: PropTypes.func.isRequired,
+};
+
 
 export default Header;
