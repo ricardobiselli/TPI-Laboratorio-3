@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getProducts } from '../../api/ApiConnection';
-import { Container, Card, ListGroup } from 'react-bootstrap';
+import { Container, Card, ListGroup, Button } from 'react-bootstrap';
+import { addToCart } from '../../utils/cart';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -19,6 +20,11 @@ const Products = () => {
     fetchProducts(); 
   }, []);
 
+  const handleAddToCart = (product) => {
+    addToCart(product);
+    alert(`${product.name} agregado al carrito`);
+  }
+
   return (
     <Container>
       <h1 className="my-4">Product List - no login required</h1>
@@ -36,6 +42,9 @@ const Products = () => {
                 <ListGroup.Item>Stock: {product.stockQuantity} unidades</ListGroup.Item>
                 <ListGroup.Item>Power Consumption: {product.powerConsumption} Wats</ListGroup.Item>
               </ListGroup>
+              <Button variant="primary" onClick={() => handleAddToCart(product)}>
+                Agregar al carrito
+              </Button>
             </Card>
           </div>
         ))}

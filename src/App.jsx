@@ -2,10 +2,13 @@ import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
-import Login from "./components/login/Login";
-import { useState } from "react";
-import Register from "./components/register/Register";
-import ShoppingCart from "./components/shoppingCart/ShoppingCart";
+import Products from "./components/ProductList/ProductList";
+import AddProductForm from "./components/AddProduct/AddProduct";
+import Clients from "./components/ClientsList/ClientsList";
+import Admins from "./components/AdminsList/AdminsList";
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
+import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 
 function App() {
   const [isLogged, setIsLogged] = useState(false); //ESTABLECE SI ESTÁ LOGEADO O NO
@@ -36,9 +39,15 @@ function App() {
         />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login isLoggin={stateLogin} />} />
+          <Route path="/pc-builder" element={<PcBuilder />} />
+          <Route path="/Products" element={<Products />} />
+          <Route path="/add-product-form" element={<AddProductForm />} />{" "}
+          {/* boton temporal, solo debe ser visible para el admin */}
+          <Route path="/clients" element={<Clients />} />
+          <Route path="/admins" element={<Admins />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/shoppingcart" element={<ShoppingCart />} />
+          <Route path="/shopping-cart" element={<ShoppingCart />} />
         </Routes>
       </BrowserRouter>
     </div>

@@ -25,6 +25,17 @@ export const getClientById = async (id) => {
   return response.data;
 };
 
+export const updateProduct = async (id, productObject) => {
+  //editar Productos
+  try {
+    const response = await api.put(`/products/${id}`, productObject);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+};
+
 export const addClient = async (clientObject) => {
   //agregar cliente
   try {
@@ -44,14 +55,4 @@ export const getClients = async () => {
 export const getAdmins = async () => {
   const response = await api.get("/admins");
   return response.data;
-};
-export const updateProduct = async (id, productObject) => {
-  //editar Productos
-  try {
-    const response = await api.put(`/products/${id}`, productObject);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
-  }
 };
