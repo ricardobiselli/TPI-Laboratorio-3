@@ -2,6 +2,7 @@ import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import ProductsMenu from "../ProductsMenu/ProductsMenu";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { addToCart } from "../../utils/cart";
 
 const products = [
   {
@@ -576,10 +577,11 @@ const PcBuilder = () => {
         navigate("/shopping-cart");
         break;
     }
+    addToCart(product);
   };
 
   return (
-    <div>
+    <div className="container">
       <div style={{ width: "100%" }}>
         <h2>{categorySelected}:</h2>
       </div>
