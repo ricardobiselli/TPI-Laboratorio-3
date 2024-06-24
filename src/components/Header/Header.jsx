@@ -25,7 +25,10 @@ const Header = () => {
           <Nav className="me-auto my-2 my-lg-0">
             <Nav.Link onClick={handleProductsClick}>Productos</Nav.Link>
             <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
-            <Nav.Link onClick={handleAddProductClick}>Agregar producto</Nav.Link> {/*boton para el admin*/ }
+            <Nav.Link onClick={handleAddProductClick}>
+              Agregar producto
+            </Nav.Link>{" "}
+            {/*boton para el admin*/}
           </Nav>
           <div className="d-flex flex-grow-1 justify-content-center">
             <Form
