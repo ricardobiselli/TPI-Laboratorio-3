@@ -25,15 +25,9 @@ export const getClientById = async (id) => {
   return response.data;
 };
 
-export const updateProduct = async (id, productObject) => {
-  //editar Productos
-  try {
-    const response = await api.put(`/products/${id}`, productObject);
-    return response.data;
-  } catch (error) {
-    console.error("Error updating product:", error);
-    throw error;
-  }
+export const getClients = async () => {
+  const response = await api.get("/Clients");
+  return response.data;
 };
 
 export const addClient = async (clientObject) => {
@@ -47,12 +41,27 @@ export const addClient = async (clientObject) => {
   }
 };
 
-export const getClients = async () => {
-  const response = await api.get("/clients");
-  return response.data;
-};
-
 export const getAdmins = async () => {
   const response = await api.get("/admins");
   return response.data;
+};
+export const updateProduct = async (id, productObject) => {
+  //editar Productos
+  try {
+    const response = await api.put(`/products/${id}`, productObject);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    throw error;
+  }
+};
+
+export const addProduct = async (productObject) => {
+  try {
+    const response = await api.post("/products", productObject);
+    return response.data;
+  } catch (error) {
+    console.error("Error adding product:", error);
+    throw error;
+  }
 };

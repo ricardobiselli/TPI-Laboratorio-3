@@ -1,6 +1,7 @@
 import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
 import ProductsMenu from "../ProductsMenu/ProductsMenu";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const products = [
   {
@@ -492,13 +493,24 @@ const products = [
     ],
     powerConsumption: 70,
   },
+  {
+    id: 44,
+    name: "Generic PSU",
+    description: "150W",
+    price: 139.99,
+    stockQuantity: 95,
+    category: "PSU",
+    compatibilities: [],
+    powerConsumption: 150,
+  },
 ];
 
 const PcBuilder = () => {
+  const navigate = useNavigate();
+
   const [categorySelected, setCategorySelected] = useState("Processor");
   const [productsSelected, setProductsSelected] = useState([]);
   const [productList, setProductList] = useState(products);
-  const [powerConsumption, setPowerConsumption] = useState(0);
 
   useEffect(() => {
     setProductList(
@@ -516,7 +528,8 @@ const PcBuilder = () => {
             p.category == "Motherboard" &&
             p.compatibilities.some(
               (compatibility) =>
-                compatibility.socket == product.compatibilities[0].socket
+                compatibility.socket == product.compatibilities[0].socket &&
+                compatibility.ram == product.compatibilities[0].ram
             )
         );
         setCategorySelected("Motherboard");
@@ -546,12 +559,21 @@ const PcBuilder = () => {
         setProductList(gpu);
         break;
       case "GPU":
+        const compatiblePSUs = products.filter(
+          (p) =>
+            p.category === "PSU" &&
+            p.powerConsumption > product.powerConsumption
+        );
         setCategorySelected("PSU");
+        setProductList(compatiblePSUs);
         break;
       case "PSU":
+        const cases = products.filter((p) => p.category == "Case");
         setCategorySelected("Case");
+        setProductList(cases);
         break;
       default:
+        navigate("/shopping-cart");
         break;
     }
   };
@@ -563,29 +585,46 @@ const PcBuilder = () => {
       </div>
       {/* <ProductsMenu setCategorySelected={setCategorySelected}></ProductsMenu> */}
       <div className="row">
-        {productList.map((product) => (
-          <div key={product.id} className="col mb-4">
-            <Card style={{ width: "250px" }}>
-              <Card.Body>
-                <Card.Title>{product.name}</Card.Title>
-                <Card.Subtitle className="mb-2 text-muted">
-                  {product.category}
-                </Card.Subtitle>
-                <Card.Text>{product.description}</Card.Text>
-              </Card.Body>
-              <ListGroup className="list-group-flush">
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
-                <ListGroup.Item>
-                  Stock: {product.stockQuantity} unidades
-                </ListGroup.Item>
-                <ListGroup.Item>
-                  Power Consumption: {product.powerConsumption} Wats
-                </ListGroup.Item>
-              </ListGroup>
-              <Button onClick={() => handleAddProduct(product)}>Add</Button>
-            </Card>
+        <div className="col-md-9">
+          <div className="row">
+            {productList.map((product) => (
+              <div key={product.id} className="col mb-4">
+                <Card style={{ width: "250px" }}>
+                  <Card.Body>
+                    <Card.Title>{product.name}</Card.Title>
+                    <Card.Subtitle className="mb-2 text-muted">
+                      {product.category}
+                    </Card.Subtitle>
+                    <Card.Text>{product.description}</Card.Text>
+                  </Card.Body>
+                  <ListGroup className="list-group-flush">
+                    <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                    <ListGroup.Item>
+                      Stock: {product.stockQuantity} unidades
+                    </ListGroup.Item>
+                    <ListGroup.Item>
+                      Power Consumption: {product.powerConsumption} Wats
+                    </ListGroup.Item>
+                  </ListGroup>
+                  <Button onClick={() => handleAddProduct(product)}>Add</Button>
+                </Card>
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
+        <div className="col-md-3">
+          <h3>Your pc:</h3>
+          <ul>
+            {productsSelected.map((selected) => {
+              return <li key={selected.id}>{selected.name}</li>;
+            })}
+          </ul>
+          Total: ${" "}
+          {productsSelected.reduce(
+            (total, product) => total + product.price,
+            0
+          )}
+        </div>
       </div>
     </div>
   );

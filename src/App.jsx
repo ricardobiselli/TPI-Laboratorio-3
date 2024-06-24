@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { useState } from "react";
 import Header from "./components/Header/Header";
 import Home from "./components/Home/Home";
 import Products from "./components/ProductList/ProductList";
@@ -9,6 +10,7 @@ import Admins from "./components/AdminsList/AdminsList";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
+import PcBuilder from "./components/PcBuilder/PcBuilder";
 
 function App() {
   const [isLogged, setIsLogged] = useState(false); //ESTABLECE SI ESTÁ LOGEADO O NO
