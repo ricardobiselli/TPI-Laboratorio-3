@@ -15,6 +15,7 @@ const Header = () => {
   const handleLoginClick = () => navigate("/login");
   const handleRegisterClick = () => navigate("/register");
   const handleAddProductClick = () => navigate("/add-product-form");
+  const handleCartClick = () => navigate("/shopping-cart")
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -60,6 +61,21 @@ const Header = () => {
               onClick={handleRegisterClick}
             >
               Registrarse
+            </Button>
+            <Button
+              onClick={handleCartClick}
+              style={{
+                backgroundColor: 'yellow',
+                color: 'black',
+                borderRadius: '50%',
+                width: '50px',
+                height: '40px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              Carrito
             </Button>
           </div>
         </Navbar.Collapse>
