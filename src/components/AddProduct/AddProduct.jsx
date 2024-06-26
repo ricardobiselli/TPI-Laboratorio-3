@@ -2,6 +2,10 @@ import  { useState } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { addProduct } from '../../api/ApiConnection';
 
+/*ProductManager ahora tiene un form que permite agregar productos sin necesidad de este componente*/
+/*ProductManager ahora tiene un form que permite agregar productos sin necesidad de este componente*/
+/*ProductManager ahora tiene un form que permite agregar productos sin necesidad de este componente*/
+
 const AddProductForm = () => {
     const [name, setName] = useState('');
     const [description, setDescription] = useState('');
