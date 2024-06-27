@@ -9,14 +9,14 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const login = async (username, password) => {
+  const login = async (userNameOrEmail, password) => {
     try {
       const response = await fetch('https://localhost:7069/api/authentication/authenticate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ userName: username, password: password }),
+        body: JSON.stringify({ userNameOrEmail: userNameOrEmail, password: password }),
       });
   
       if (response.ok) {

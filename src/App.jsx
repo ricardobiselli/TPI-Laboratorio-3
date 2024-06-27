@@ -9,7 +9,7 @@ import Clients from "./components/ClientsList/ClientsList";
 import Admins from "./components/AdminsList/AdminsList";
 import ProductManager from "./components/ProductManager/ProductManager";
 import { AuthProvider } from './services/authentication/AuthContext';
-import Login from "./components/Login/Login";
+import Login from "./components/login/Login";
 import ProtectedRoute from './services/authentication/ProtectedRoute';
 import Register from "./components/Register/Register";
 import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
