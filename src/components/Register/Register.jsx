@@ -1,6 +1,6 @@
 import { Button, Form, Container, Row, Col, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { addClient, getClients } from "../../api/ApiConnection";
 
 const Register = () => {
@@ -15,12 +15,50 @@ const Register = () => {
     const [dni, setDni] = useState("");
     const [address, setAddress] = useState("");
 
+
+    const emailRef = useRef(null);
+    const passRef = useRef(null);
+    const passConfirmRef = useRef(null);
+    const nameRef = useRef(null);
+    const surnameRef = useRef(null);
+    const userNameRef = useRef(null);
+    const dniRef = useRef(null);
+    const addressRef = useRef(null);
+
     const clickHandler = () => {
         navigate("/");
     };
 
     const submitUser = async (event) => {
         event.preventDefault();
+
+        let isValid = true;
+
+        const refs = [
+            { ref: userNameRef, value: userName },
+            { ref: nameRef, value: name },
+            { ref: surnameRef, value: surname },
+            { ref: dniRef, value: dni },
+            { ref: addressRef, value: address },
+            { ref: emailRef, value: emailEntered },
+            { ref: passRef, value: passEntered },
+            { ref: passConfirmRef, value: passConfirmEntered },
+            
+        ];
+
+        refs.forEach(({ ref, value }) => {
+            if (!value) {
+                ref.current.focus();
+                ref.current.style.borderColor = "red";
+                isValid = false;
+            } else {
+                ref.current.style.borderColor = "";
+            }
+        });
+
+        if (!isValid) {
+            return;
+        }
 
         try {
             const data = await getClients();
@@ -92,6 +130,7 @@ const Register = () => {
                                         placeholder="Enter user name"
                                         onChange={(e) => setUserName(e.target.value)}
                                         value={userName}
+                                        ref={userNameRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -101,6 +140,7 @@ const Register = () => {
                                         placeholder="Enter email"
                                         onChange={(e) => setEmailEntered(e.target.value)}
                                         value={emailEntered}
+                                        ref={emailRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicName">
@@ -110,6 +150,7 @@ const Register = () => {
                                         placeholder="Enter name"
                                         onChange={(e) => setName(e.target.value)}
                                         value={name}
+                                        ref={nameRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicSurname">
@@ -119,6 +160,7 @@ const Register = () => {
                                         placeholder="Enter surname"
                                         onChange={(e) => setSurname(e.target.value)}
                                         value={surname}
+                                        ref={surnameRef}
                                     />
                                 </Form.Group>
                                
@@ -129,6 +171,7 @@ const Register = () => {
                                         placeholder="Enter id"
                                         onChange={(e) => setDni(e.target.value)}
                                         value={dni}
+                                        ref={dniRef}
                                     />
                                 </Form.Group>
                                 
@@ -139,6 +182,7 @@ const Register = () => {
                                         placeholder="Enter address"
                                         onChange={(e) => setAddress(e.target.value)}
                                         value={address}
+                                        ref={addressRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -148,6 +192,7 @@ const Register = () => {
                                         placeholder="Enter password"
                                         onChange={(e) => setPassEntered(e.target.value)}
                                         value={passEntered}
+                                        ref={passRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicCheckPassword">
@@ -157,6 +202,7 @@ const Register = () => {
                                         placeholder="Confirm password"
                                         onChange={(e) => setPassConfirmEntered(e.target.value)}
                                         value={passConfirmEntered}
+                                        ref={passConfirmRef}
                                     />
                                 </Form.Group>
                                 <Button variant="primary" type="submit" className="w-100">

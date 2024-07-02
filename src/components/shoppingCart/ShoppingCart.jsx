@@ -1,18 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { ListGroup, Button, Row, Col, Badge, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getProductById, updateProduct } from '../../api/ApiConnection';
 import { getCart, removeFromCart, clearCart } from '../../utils/cart';
+import AuthContext from '../../services/authentication/AuthContext';
 
 const ShoppingCart = () => {
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         setCart(getCart());
     }, []);
 
-    const total = cart.reduce((sum, product) => sum + product.price * product.stock, 0);
+    const total = cart.reduce((sum, product) => sum + product.price * product.stockQuantity, 0);
 
     const handleRemoveFromCart = (productId) => {
         const updatedCart = removeFromCart(productId);
@@ -20,6 +22,13 @@ const ShoppingCart = () => {
     };
 
     const onCheckout = async () => {
+
+        if (!user) {
+            alert('Es necesario iniciar sesión para finalizar la compra.');
+            navigate('/login');
+            return;
+        }
+
         if (cart.length === 0) {
             alert('No tiene productos en el carrito para comprar');
             return;
@@ -27,14 +36,14 @@ const ShoppingCart = () => {
         try {
             for (const cartItem of cart) {
                 const product = await getProductById(cartItem.id);
-                const updatedStock = product.stock - cartItem.stock;
+                const updatedStock = product.stockQuantity - cartItem.stockQuantity;
 
                 if (updatedStock < 0) {
                     alert(`No hay suficiente stock para ${product.name}`);
                     return;
                 }
 
-                const updatedProduct = { ...product, stock: updatedStock };
+                const updatedProduct = { ...product, stockQuantity: updatedStock };
                 await updateProduct(product.id, updatedProduct);
             }
 
@@ -66,7 +75,7 @@ const ShoppingCart = () => {
                                     <Col>{product.name}</Col>
                                     <Col className="text-end">${product.price}</Col>
                                     <Col className="text-end">
-                                        <Badge bg="secondary">{product.stock}</Badge>
+                                        <Badge bg="secondary">{product.stockQuantity}</Badge>
                                     </Col>
                                     <Col className="text-end">
                                         <Button variant="danger" size="sm" onClick={() => handleRemoveFromCart(product.id)}>

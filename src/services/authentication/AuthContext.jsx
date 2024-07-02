@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect } from 'react';
 import {jwtDecode} from 'jwt-decode';
 import PropTypes from 'prop-types';
+import { clearCart } from '../../utils/cart';
 
 const AuthContext = createContext();
 
@@ -38,6 +39,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    clearCart();
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');

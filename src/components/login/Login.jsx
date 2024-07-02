@@ -1,6 +1,6 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useRef } from 'react';
 import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../services/authentication/AuthContext';
 
 
@@ -8,16 +8,50 @@ const Login = () => {
     const [userNameOrEmail, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useContext(AuthContext);
+    const navigate = useNavigate();
+
+    const emailOrUsernameRef = useRef(null);
+    const passEnteredRef = useRef(null);
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await login(userNameOrEmail, password);
+        
+        
+        let isValid = true;
+
+        if (!emailOrUsernameRef.current.value) {
+            emailOrUsernameRef.current.focus();
+            emailOrUsernameRef.current.style.borderColor = "red";
+            isValid = false;
+        } else {
+            emailOrUsernameRef.current.style.borderColor = "";
+        }
+
+        if (!passEnteredRef.current.value) {
+            passEnteredRef.current.focus();
+            passEnteredRef.current.style.borderColor = "red";
+            isValid = false;
+        } else {
+            passEnteredRef.current.style.borderColor = "";
+        }
+
+        if (!isValid) {
+            return;
+        }
+        
+        
+        
         if (success) {
             console.log('Login successful');
+            navigate("/");
         } else {
             console.log('Login failed');
+            window.alert("Usuario o contraseña inválidos");
         }
     };
+
 
     return (
         <Container fluid className="d-flex justify-content-center align-items-center min-vh-100" style={{ marginTop: '60px' }}>
@@ -34,6 +68,7 @@ const Login = () => {
                                         placeholder="Ingrese su mail o usuario"
                                         value={userNameOrEmail}
                                         onChange={(e) => setEmailOrUsername(e.target.value)}
+                                        ref={emailOrUsernameRef}
                                     />
                                 </Form.Group>
                                 <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -43,13 +78,14 @@ const Login = () => {
                                         placeholder="Ingrese su contraseña"
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
+                                        ref={passEnteredRef}
                                     />
                                 </Form.Group>
                                 <Button variant="primary" type="submit" className="w-100">
                                     Iniciar sesión
                                 </Button>
                             </Form>
-                            <Button variant="secondary" className="w-100 mt-3">
+                            <Button variant="secondary" onClick={() => navigate("/")} className="w-100 mt-3">
                                 Volver
                             </Button>
                             <div className="text-center mt-3">

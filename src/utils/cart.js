@@ -6,9 +6,9 @@ export const addToCart = (product) => {
     const existingProduct = cart.find(item => item.id === product.id);
 
     if (existingProduct) {
-        existingProduct.stock += 1;
+        existingProduct.stockQuantity += 1;
     } else {
-        cart.push({ ...product, stock: 1 });
+        cart.push({ ...product, stockQuantity: 1 });
     }
 
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -23,8 +23,8 @@ export const removeFromCart = (productId) => {
 
     cart = cart.map(item => {
         if (item.id === productId) {
-            if (item.stock > 1) {
-                return { ...item, stock: item.stock - 1 };
+            if (item.stockQuantity > 1) {
+                return { ...item, stockQuantity: item.stockQuantity - 1 };
             } else {
                 return null; 
             }
