@@ -11,10 +11,8 @@ const Register = () => {
     const [passConfirmEntered, setPassConfirmEntered] = useState("");
     const [name, setName] = useState("");
     const [surname, setSurname] = useState("");
-    const [birthday, setBirthday] = useState("");
     const [userName, setUserName] = useState("");
     const [dni, setDni] = useState("");
-    const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
 
     const clickHandler = () => {
@@ -52,13 +50,10 @@ const Register = () => {
                     userName: userName,
                     email: emailEntered,
                     password: passEntered,
-                    userType: "client",
                     firstName: name,
                     lastName: surname,
                     dniNumber: dni,
-                    birthDate: birthday,
                     address: address,
-                    phoneNumber: phone,
                 }
 
                 try {
@@ -70,9 +65,7 @@ const Register = () => {
                     setName('');
                     setSurname('');
                     setDni('');
-                    setBirthday('');
                     setAddress('');
-                    setPhone('');
                     window.alert("Registro exitoso, ya puede iniciar sesión");
                     navigate("/");
                 } catch (error) {
@@ -128,14 +121,7 @@ const Register = () => {
                                         value={surname}
                                     />
                                 </Form.Group>
-                                <Form.Group className="mb-3" controlId="formBasicBirthday">
-                                    <Form.Label>Fecha de nacimiento</Form.Label>
-                                    <Form.Control
-                                        type="date"
-                                        onChange={(e) => setBirthday(e.target.value)}
-                                        value={birthday}
-                                    />
-                                </Form.Group>
+                               
                                 <Form.Group className="mb-3" controlId="formBasicDni">
                                     <Form.Label>DNI</Form.Label>
                                     <Form.Control
@@ -145,15 +131,7 @@ const Register = () => {
                                         value={dni}
                                     />
                                 </Form.Group>
-                                <Form.Group className="mb-3" controlId="formBasicCheckPhone">
-                                    <Form.Label>Teléfono</Form.Label>
-                                    <Form.Control
-                                        type="tel"
-                                        placeholder="Enter phone number"
-                                        onChange={(e) => setPhone(e.target.value)}
-                                        value={phone}
-                                    />
-                                </Form.Group>
+                                
                                 <Form.Group className="mb-3" controlId="formBasicAddress">
                                     <Form.Label>Dirección</Form.Label>
                                     <Form.Control
