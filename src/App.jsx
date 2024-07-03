@@ -52,7 +52,7 @@ const App = () => {
             <Route path="/admins" element={<Admins />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/shopping-cart" element={<ShoppingCart />} />
+            <Route path="/shopping-cart" element={<ShoppingC />} />
             <Route path="/product-search" element={<ProductSearch searchProduct={searchProduct}/>}/>
           </Routes>
         </BrowserRouter>
