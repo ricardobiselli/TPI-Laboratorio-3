@@ -61,13 +61,19 @@ const ShoppingCart = () => {
         navigate('/products');
     };
 
+    const handleClearCart = () => {
+        clearCart();
+        setCart([]);
+    };
+
+
     return (
         <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100">
             <div className="w-100" style={{ maxWidth: '600px' }}>
                 <h2 className="text-center">Tu carrito</h2>
                 {cart.length === 0 ? (
                     <p className="text-center">No hay productos en el carrito.</p>
-                ) : (
+                ) : (<>
                     <ListGroup className="mb-3">
                         {cart.map((product) => (
                             <ListGroup.Item key={product.id}>
@@ -86,6 +92,10 @@ const ShoppingCart = () => {
                             </ListGroup.Item>
                         ))}
                     </ListGroup>
+                    <Button variant="danger" onClick={handleClearCart} className="mb-3">
+                        Eliminar todos
+                    </Button>
+                </>
                 )}
                 <h3 className="text-center">Total: ${total.toFixed(2)}</h3>
                 <div className="d-flex justify-content-between mt-3">
