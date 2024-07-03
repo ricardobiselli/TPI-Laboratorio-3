@@ -5,7 +5,7 @@ import { getProductById, updateProduct } from '../../api/ApiConnection';
 import { getCart, removeFromCart, clearCart } from '../../utils/cart';
 import AuthContext from '../../services/authentication/AuthContext';
 
-const ShoppingCart = () => {
+const ShoppingC = () => {
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
@@ -111,4 +111,4 @@ const ShoppingCart = () => {
     );
 };
 
-export default ShoppingCart;
+export default ShoppingC;
