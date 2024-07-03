@@ -26,6 +26,8 @@ const Header = ({onSearchSaved }) => {
   const handleRegisterClick = () => navigate("/register");
   const handleAddProductClick = () => navigate("/add-product-form");
   const handleCartClick = () => navigate("/shopping-cart")
+  const handleAddClients = () => navigate("/clients")
+  const handleAddProductManager = () => navigate("/productmanager")
 
   const userRole = user ? user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] : null;
 
@@ -40,6 +42,12 @@ const Header = ({onSearchSaved }) => {
             <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
             {(userRole === 'admin' || userRole === 'superadmin') && (
               <Nav.Link onClick={handleAddProductClick}>Agregar producto</Nav.Link>
+            )}
+             {(userRole === 'admin' || userRole === 'superadmin') && (
+              <Nav.Link onClick={handleAddProductManager}>Product Manager</Nav.Link>
+            )}
+            {(userRole === 'superadmin') && (
+              <Nav.Link onClick={handleAddClients}>Clientes</Nav.Link>
             )}
           </Nav>
           <div className="d-flex flex-grow-1 justify-content-center">
