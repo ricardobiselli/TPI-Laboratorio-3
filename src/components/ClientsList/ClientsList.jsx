@@ -1,59 +1,75 @@
-import { useState, useEffect, useContext } from "react";
-import { getClients, addClient, updateClient, deleteClient } from "../../api/ApiConnection";
-import { Container, Row, Col, Button, Modal, Form , Alert} from "react-bootstrap";
-import AuthContext from '../../services/authentication/AuthContext';
-
+import { useState, useEffect } from "react";
+import { getClients, addClient, updateClient, deleteClient, getClientOrders } from "../../api/ApiConnection";
+import { Container, Row, Col, Button, Modal, Form, Alert } from "react-bootstrap";
 
 const Clients = () => {
-  const { user } = useContext(AuthContext);
-
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); 
+  const [modalMode, setModalMode] = useState("add");
+  const [clientOrders, setClientOrders] = useState({});
   const [currentClient, setCurrentClient] = useState({
-    id: null,
     userName: "",
     email: "",
     firstName: "",
     lastName: "",
     dniNumber: "",
-    address: ""
+    address: "",
+    password: ""
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    clients.forEach(client => fetchClientOrders(client.id));
+  }, [clients]);
+
   const fetchClients = async () => {
     try {
       const data = await getClients();
-      const clientsArray = data.$values || [];
+      const clientsArray = Array.isArray(data) ? data : data.$values || [];
       setClients(clientsArray);
     } catch (error) {
       console.error("Failed to fetch clients:", error);
     }
   };
 
+  const fetchClientOrders = async (clientId) => {
+    try {
+      const orders = await getClientOrders(clientId);
+      setClientOrders(prevOrders => ({
+        ...prevOrders,
+        [clientId]: Array.isArray(orders) ? orders : orders.$values || []
+      }));
+    } catch (error) {
+      console.error("Failed to fetch client orders:", error);
+    }
+  };
+
   const handleOpenModal = (mode, client = null) => {
     setModalMode(mode);
     setCurrentClient(client || {
-      id: null,
       userName: "",
       email: "",
       firstName: "",
       lastName: "",
       dniNumber: "",
-      address: ""
+      address: "",
+      password: ""
     });
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setError("");
   };
 
   const handleSaveClient = async () => {
     try {
+      console.log("Saving client with data:", currentClient);
       if (modalMode === "add") {
         await addClient(currentClient);
       } else {
@@ -62,7 +78,8 @@ const Clients = () => {
       await fetchClients();
       setShowModal(false);
     } catch (error) {
-      console.error('Error saving client:', error);
+      console.error("Error saving client:", error);
+      setError("Error saving client. Please check your input and try again.");
     }
   };
 
@@ -72,31 +89,21 @@ const Clients = () => {
         await deleteClient(id);
         await fetchClients();
       } catch (error) {
-        console.error('Error deleting client:', error);
+        console.error("Error deleting client:", error);
       }
     }
   };
 
   const handleChangeClient = (e) => {
     const { name, value } = e.target;
-    setCurrentClient(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+    setCurrentClient(prevData => ({ ...prevData, [name]: value }));
   };
-  if (!user || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] !== "superadmin") {
-    return (
-      <Container>
-        <Alert variant="danger">
-          Access denied. You must be a superadmin to view this page.
-        </Alert>
-      </Container>
-    );
-  }
+
   return (
     <Container>
+      <h1 className="my-4 text-center">Administrador de Clientes</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
-        Add Client
+       Agregar Cliente
       </Button>
 
       {clients.map((client) => (
@@ -104,29 +111,53 @@ const Clients = () => {
           <Row>
             <Col>
               <div><strong>Username:</strong> {client.userName}</div>
-              <div><strong>First Name:</strong> {client.firstName}</div>
-              <div><strong>Last Name:</strong> {client.lastName}</div>
+              <div><strong>Nombre:</strong> {client.firstName}</div>
+              <div><strong>Apellido:</strong> {client.lastName}</div>
               <div><strong>Email:</strong> {client.email}</div>
-              <div><strong>DNI Number:</strong> {client.dniNumber}</div>
-              <div><strong>Address:</strong> {client.address}</div>
+              <div><strong>DNI :</strong> {client.dniNumber}</div>
+              <div><strong>Domicilio:</strong> {client.address}</div>
+              <div className="mt-3">
+                <strong>Ordenes de compra:</strong>
+                {clientOrders[client.id] ? (
+                  <ul>
+                    {clientOrders[client.id].map(order => (
+                      <li key={order.orderId}>
+                        Orden Id nro: {order.orderId}, Total: ${order.totalAmount}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Loading ...</p>
+                )}
+              </div>
             </Col>
             <Col xs="auto">
-              <Button variant="primary" className="me-2" onClick={() => handleOpenModal("edit", client)}>
-                Edit
+              <Button
+                variant="outline-primary"
+                onClick={() => handleOpenModal("edit", client)}
+                className="mb-2 d-block w-100"
+              >
+                Editar
               </Button>
-              <Button variant="danger" onClick={() => handleDeleteClient(client.id)}>
-                Delete
+              <Button
+                variant="outline-danger"
+                onClick={() => handleDeleteClient(client.id)}
+                className="mb-2 d-block w-100"
+              >
+                Borrar
               </Button>
             </Col>
           </Row>
         </div>
       ))}
 
+
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
           <Modal.Title>{modalMode === "add" ? "Add Client" : "Edit Client"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form>
             <Form.Group controlId="formClientUsername">
               <Form.Label>Username</Form.Label>
@@ -138,7 +169,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientFirstName">
-              <Form.Label>First Name</Form.Label>
+              <Form.Label>Nombre</Form.Label>
               <Form.Control
                 type="text"
                 name="firstName"
@@ -147,7 +178,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientLastName">
-              <Form.Label>Last Name</Form.Label>
+              <Form.Label> Apellido</Form.Label>
               <Form.Control
                 type="text"
                 name="lastName"
@@ -165,7 +196,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientDniNumber">
-              <Form.Label>DNI Number</Form.Label>
+              <Form.Label>DNI </Form.Label>
               <Form.Control
                 type="text"
                 name="dniNumber"
@@ -174,7 +205,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientAddress">
-              <Form.Label>Address</Form.Label>
+              <Form.Label>Domicilio</Form.Label>
               <Form.Control
                 type="text"
                 name="address"
@@ -182,14 +213,23 @@ const Clients = () => {
                 onChange={handleChangeClient}
               />
             </Form.Group>
+            <Form.Group controlId="formClientPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={currentClient.password}
+                onChange={handleChangeClient}
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+            Cerrar
           </Button>
           <Button variant="primary" onClick={handleSaveClient}>
-            Save
+            {modalMode === "add" ? "Agregar Cliente" : "Guardar"}
           </Button>
         </Modal.Footer>
       </Modal>

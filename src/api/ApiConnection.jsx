@@ -54,7 +54,7 @@ export const addClient = async (clientObject) => {
         const response = await api.post('/clients/register', clientObject);
         return response.data;
     } catch (error) {
-        console.error('Error adding product:', error);
+        console.error('Error adding client:', error);
         throw error;
     }
 };
@@ -91,6 +91,16 @@ export const getAdmins = async () => {
     }
 };
 
+export const addAdmin = async (adminObject) => {
+    try {
+        const response = await api.post('/admins/register', adminObject);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
+};
+
 export const updateAdmin = async (id, updatedData) => {
     try {
         const response = await api.put(`/admins/${id}`, updatedData);
@@ -107,6 +117,36 @@ export const deleteAdmin = async (id) => {
         return response.data;
     } catch (error) {
         console.error(`Error deleting admin with ID ${id}:`, error);
+        throw error;
+    }
+};
+
+export const createOrder = async (orderData) => {
+    try {
+        const response = await api.post(`/orders`, orderData);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating order:', error);
+        throw error;
+    }
+};
+
+export const getClientOrders = async (clientId) =>{
+    try {
+        const response = await api.get(`/orders/${clientId}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching orders for client with ID ${clientId}:`, error);
+        throw error;
+    }
+}
+
+export const getAllOrders = async () => {
+    try {
+        const response = await api.get('/orders');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
         throw error;
     }
 };

@@ -1,10 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../api/ApiConnection';
-import { Container, Card, ListGroup, Button, Modal, Form, Alert } from 'react-bootstrap';
-import AuthContext from '../../services/authentication/AuthContext';
+import { Container, Card, ListGroup, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
 
 const ProductManager = () => {
-  const { user } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +15,8 @@ const ProductManager = () => {
     powerConsumption: 0
   });
   const [error, setError] = useState('');
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -44,7 +44,7 @@ const ProductManager = () => {
         console.error('Error adding product:', error);
       }
     } else {
-      setError('All fields must be filled out.');
+      setError('All fields must be filled out, no negative numbers allowed');
     }
   };
 
@@ -63,17 +63,28 @@ const ProductManager = () => {
         console.error(`Error updating product with ID ${selectedProduct.id}:`, error);
       }
     } else {
-      setError('All fields must be filled out.');
+      setError('All fields must be filled out, no negative numbers allowed');
     }
   };
 
   const handleDeleteProduct = async (id) => {
+    setDeleteConfirmation(true);
+    setDeleteProductId(id);
+  };
+
+  const confirmDeleteProduct = async () => {
     try {
-      await deleteProduct(id);
+      await deleteProduct(deleteProductId);
       fetchProducts();
+      setDeleteConfirmation(false);
     } catch (error) {
-      console.error(`Error deleting product with ID ${id}:`, error);
+      console.error(`Error deleting product with ID ${deleteProductId}:`, error);
     }
+  };
+
+  const cancelDeleteProduct = () => {
+    setDeleteConfirmation(false);
+    setDeleteProductId('');
   };
 
   const handleViewDetails = (product) => {
@@ -112,85 +123,99 @@ const ProductManager = () => {
   };
 
   const isFormValid = () => {
-    return formData.name && formData.category && formData.description && formData.price && formData.stockQuantity && formData.powerConsumption;
-  };
-
-  if (!user || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] !== "admin") {
     return (
-      <Container>
-        <Alert variant="danger">
-          Access denied! You are not allowed to view this page.
-        </Alert>
-      </Container>
+      formData.name &&
+      formData.category &&
+      formData.description &&
+      formData.price > 0 && 
+      formData.stockQuantity >= 0 &&
+      formData.powerConsumption >= 0 
     );
-  }
+  };
 
   return (
     <Container>
-      <h1 className="my-4">Manage Products</h1>
-      <Button variant="success" className="mb-3" onClick={() => setShowModal(true)}>Add Product</Button>
-      <div className="row">
+      <h1 className="my-4 text-center">Administrar Productos</h1>
+      <Row className="mb-3">
+        <Col className="text-end">
+          <Button variant="success" onClick={() => setShowModal(true)}>Agregar Producto</Button>
+        </Col>
+      </Row>
+      <Row>
         {products.map((product) => (
-          <div key={product.id} className="col-md-6 col-lg-4 mb-4">
-            <Card>
+          <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
+            <Card className="h-100 shadow-sm">
               <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{product.category}</Card.Subtitle>
                 <Card.Text>{product.description}</Card.Text>
               </Card.Body>
               <ListGroup className="list-group-flush">
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                <ListGroup.Item>Precio: ${product.price}</ListGroup.Item>
                 <ListGroup.Item>Stock: {product.stockQuantity} units</ListGroup.Item>
-                <ListGroup.Item>Power Consumption: {product.powerConsumption} Watts</ListGroup.Item>
+                <ListGroup.Item> Consumo: {product.powerConsumption} Watts</ListGroup.Item>
               </ListGroup>
-              <Card.Body>
-                <Button variant="primary" onClick={() => handleViewDetails(product)}>Edit</Button>
-                <Button variant="danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
+              <Card.Body className="d-flex justify-content-center">
+                <Button variant="outline-primary" onClick={() => handleViewDetails(product)}>Editar</Button>
+                <Button variant="outline-danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Borrar</Button>
               </Card.Body>
             </Card>
-          </div>
+          </Col>
         ))}
-      </div>
+      </Row>
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{selectedProduct ? 'Edit Product' : 'Add Product'}</Modal.Title>
+          <Modal.Title>{selectedProduct ? 'Editar' : 'Agregar'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form>
             <Form.Group controlId="formProductName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Nombre</Form.Label>
               <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductCategory">
-              <Form.Label>Category</Form.Label>
+              <Form.Label>Categoria</Form.Label>
               <Form.Control type="text" name="category" value={formData.category} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductDescription">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Descripcion</Form.Label>
               <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductPrice">
-              <Form.Label>Price</Form.Label>
+              <Form.Label>Precio</Form.Label>
               <Form.Control type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductStock">
-              <Form.Label>Stock Quantity</Form.Label>
+              <Form.Label>Stock </Form.Label>
               <Form.Control type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductPowerConsumption">
-              <Form.Label>Power Consumption (Watts)</Form.Label>
+              <Form.Label> Consumo (Watts)</Form.Label>
               <Form.Control type="number" name="powerConsumption" value={formData.powerConsumption} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+          <Button variant="secondary" onClick={handleCloseModal}>Cerrar</Button>
           {selectedProduct ?
-            <Button variant="primary" onClick={handleUpdateProduct}>Update</Button> :
-            <Button variant="success" onClick={handleAddProduct}>Add</Button>
+            <Button variant="primary" onClick={handleUpdateProduct}>Actualizar</Button> :
+            <Button variant="success" onClick={handleAddProduct}>Agregar</Button>
           }
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={deleteConfirmation} onHide={cancelDeleteProduct}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Estás seguro que deseas eliminar este producto?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDeleteProduct}>Cancelar</Button>
+          <Button variant="danger" onClick={confirmDeleteProduct}>Eliminar</Button>
         </Modal.Footer>
       </Modal>
     </Container>

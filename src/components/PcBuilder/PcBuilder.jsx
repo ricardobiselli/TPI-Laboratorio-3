@@ -1,5 +1,3 @@
-import { Button, Card, ListGroup, ListGroupItem } from "react-bootstrap";
-import ProductsMenu from "../ProductsMenu/ProductsMenu";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { addToCart } from "../../utils/cart";
@@ -14,21 +12,32 @@ const PcBuilder = () => {
   const [productList, setProductList] = useState([]);
 
   useEffect(() => {
+    const pcBuilded = window.localStorage.getItem("pcBuilded");
+    if (pcBuilded) {
+      let confirm = window.confirm(
+        "Ya armó una pc completa, ¿Seguro quiere seguir agregando productos?"
+      );
+      if (confirm) {
+        navigate("/pc-builder");
+      } else {
+        navigate("/shopping-cart");
+      }
+    }
     const fetchProducts = async () => {
       try {
         const data = await getProducts();
-        console.log("data", data);
-        setProductList(data.$values || []);
-        setProductList(
-          productList.filter((product) => product.category == categorySelected)
+        const allProducts = data.$values || [];
+        const filteredProducts = allProducts.filter(
+          (product) => product.category === categorySelected
         );
+        setProductList(filteredProducts);
       } catch (error) {
         console.error("fetch products failed!!!", error);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [categorySelected]);
 
   const handleAddProduct = (product) => {
     setProductsSelected((prevProducts) => [...prevProducts, product]);
@@ -86,6 +95,7 @@ const PcBuilder = () => {
         break;
       default:
         navigate("/shopping-cart");
+        window.localStorage.setItem("pcBuilded", "true");
         break;
     }
     addToCart(product);

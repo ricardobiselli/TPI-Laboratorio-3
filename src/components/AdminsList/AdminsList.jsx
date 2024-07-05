@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
-import { getAdmins, updateAdmin, deleteAdmin } from "../../api/ApiConnection";
+import {
+  getAdmins,
+  addAdmin,
+  updateAdmin,
+  deleteAdmin,
+} from "../../api/ApiConnection";
 import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
 
 const Admins = () => {
   const [admins, setAdmins] = useState([]);
-  const [selectedAdmin, setSelectedAdmin] = useState(null); 
-  const [showModal, setShowModal] = useState(false); 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMode, setModalMode] = useState("add");
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
   const [updatedAdminData, setUpdatedAdminData] = useState({
     userName: "",
-    email: ""
+    email: "",
+    password: "",
   });
 
   useEffect(() => {
@@ -18,45 +25,57 @@ const Admins = () => {
   const fetchAdmins = async () => {
     try {
       const data = await getAdmins();
-      console.log("data", data);
       setAdmins(data.$values || []);
     } catch (error) {
-      console.error("fetch clients failed!!!", error);
+      console.error("Failed to fetch admins:", error);
     }
   };
 
-  const handleViewDetails = (admin) => {
-    setSelectedAdmin(admin); 
-    setUpdatedAdminData({ 
-      userName: admin.userName,
-      email: admin.email
-    });
+  const handleOpenModal = (mode, admin = null) => {
+    setModalMode(mode);
+    if (mode === "edit" && admin) {
+      setSelectedAdmin(admin);
+      setUpdatedAdminData({
+        userName: admin.userName,
+        email: admin.email,
+        password: "",
+      });
+    } else {
+      setSelectedAdmin(null);
+      setUpdatedAdminData({
+        userName: "",
+        email: "",
+        password: "",
+      });
+    }
     setShowModal(true);
   };
 
   const handleCloseModal = () => {
-    setShowModal(false); 
+    setShowModal(false);
   };
 
-  const handleUpdateAdmin = async () => {
+  const handleSaveAdmin = async () => {
     try {
-      const updatedData = {
-        userName: updatedAdminData.userName,
-        email: updatedAdminData.email
-      };
-
-      await updateAdmin(selectedAdmin.id, updatedData);
-      fetchAdmins(); 
-      setShowModal(false); 
+      if (modalMode === "add") {
+        await addAdmin(updatedAdminData);
+      } else if (modalMode === "edit" && selectedAdmin) {
+        await updateAdmin(selectedAdmin.id, updatedAdminData);
+      }
+      fetchAdmins();
+      setShowModal(false);
     } catch (error) {
-      console.error(`Error updating admin with ID ${selectedAdmin.id}:`, error);
+      console.error(
+        `Error ${modalMode === "add" ? "adding" : "updating"} admin:`,
+        error
+      );
     }
   };
 
   const handleDeleteAdmin = async (id) => {
     try {
       await deleteAdmin(id);
-      fetchAdmins(); 
+      fetchAdmins();
     } catch (error) {
       console.error(`Error deleting admin with ID ${id}:`, error);
     }
@@ -64,33 +83,48 @@ const Admins = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setUpdatedAdminData({
-      ...updatedAdminData,
-      [name]: value
-    });
+    setUpdatedAdminData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   return (
     <Container>
+      <h1 className="my-4 text-center">Administrar Admins</h1>
+      <Button
+        variant="success"
+        className="mb-3"
+        onClick={() => handleOpenModal("add")}
+      >
+        Agregar Admin
+      </Button>
+
       {admins.map((admin) => (
         <div key={admin.id} className="border rounded p-3 mb-3">
           <Row>
             <Col>
               <div>
-                <strong>Name:</strong> {admin.userName}
+                <strong>Username:</strong> {admin.userName}
               </div>
-            </Col>
-            <Col>
               <div>
                 <strong>Email:</strong> {admin.email}
               </div>
             </Col>
-            <Col>
-              <Button variant="primary" onClick={() => handleViewDetails(admin)}>
-                Edit
+            <Col xs="auto">
+              <Button
+                variant="outline-primary"
+                onClick={() => handleOpenModal("edit", admin)}
+                className="mb-2 d-block w-100"
+              >
+                Editar
               </Button>
-              <Button variant="danger" onClick={() => handleDeleteAdmin(admin.id)}>
-                Delete
+              <Button
+                variant="outline-danger"
+                onClick={() => handleDeleteAdmin(admin.id)}
+                className="mb-2 d-block w-100"
+              >
+                Borrar
               </Button>
             </Col>
           </Row>
@@ -99,12 +133,14 @@ const Admins = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Edit Admin</Modal.Title>
+          <Modal.Title>
+            {modalMode === "add" ? "Add Admin" : "Edit Admin"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
-            <Form.Group controlId="formAdminName">
-              <Form.Label>Name</Form.Label>
+            <Form.Group controlId="formAdminUsername">
+              <Form.Label>Username</Form.Label>
               <Form.Control
                 type="text"
                 name="userName"
@@ -121,14 +157,23 @@ const Admins = () => {
                 onChange={handleChange}
               />
             </Form.Group>
+            <Form.Group controlId="formAdminPassword">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={updatedAdminData.password}
+                onChange={handleChange}
+              />
+            </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+            Cerrar
           </Button>
-          <Button variant="primary" onClick={handleUpdateAdmin}>
-            Update
+          <Button variant="primary" onClick={handleSaveAdmin}>
+            guardar
           </Button>
         </Modal.Footer>
       </Modal>

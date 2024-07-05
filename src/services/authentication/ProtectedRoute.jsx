@@ -2,15 +2,17 @@ import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 import PropTypes from 'prop-types';
+import { Alert } from 'react-bootstrap';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, userRole } = useContext(AuthContext);
 
   console.log('ProtectedRoute - User:', user);
   console.log('ProtectedRoute - Loading:', loading);
+  console.log('ProtectedRoute - User role:', userRole);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   if (!user) {
@@ -18,12 +20,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  const userRole = user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-  console.log('ProtectedRoute - User role:', userRole);
-
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    console.log('ProtectedRoute - User does not have required role, redirecting to home');
-    return <Navigate to="/" replace />;
+    console.log('ProtectedRoute - User does not have required role');
+    return (
+      <Alert variant="danger">
+        Access denied! You do not have the required permissions to view this page.
+        <br />
+        <Alert.Link href="/">Return to Home page</Alert.Link>
+      </Alert>
+    );
   }
 
   console.log('ProtectedRoute - Access granted');
