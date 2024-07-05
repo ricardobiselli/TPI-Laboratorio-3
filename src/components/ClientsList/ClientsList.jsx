@@ -101,9 +101,9 @@ const Clients = () => {
 
   return (
     <Container>
-      <h1 className="my-4 text-center">Manage Clients</h1>
+      <h1 className="my-4 text-center">Administrador de Clientes</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
-        Add Client
+       Agregar Cliente
       </Button>
 
       {clients.map((client) => (
@@ -111,23 +111,23 @@ const Clients = () => {
           <Row>
             <Col>
               <div><strong>Username:</strong> {client.userName}</div>
-              <div><strong>First Name:</strong> {client.firstName}</div>
-              <div><strong>Last Name:</strong> {client.lastName}</div>
+              <div><strong>Nombre:</strong> {client.firstName}</div>
+              <div><strong>Apellido:</strong> {client.lastName}</div>
               <div><strong>Email:</strong> {client.email}</div>
-              <div><strong>DNI Number:</strong> {client.dniNumber}</div>
-              <div><strong>Address:</strong> {client.address}</div>
+              <div><strong>DNI :</strong> {client.dniNumber}</div>
+              <div><strong>Domicilio:</strong> {client.address}</div>
               <div className="mt-3">
-                <strong>Orders:</strong>
+                <strong>Ordenes de compra:</strong>
                 {clientOrders[client.id] ? (
                   <ul>
                     {clientOrders[client.id].map(order => (
                       <li key={order.orderId}>
-                        Order ID: {order.orderId}, Total: ${order.totalAmount}
+                        Orden Id nro: {order.orderId}, Total: ${order.totalAmount}
                       </li>
                     ))}
                   </ul>
                 ) : (
-                  <p>Loading orders...</p>
+                  <p>Loading ...</p>
                 )}
               </div>
             </Col>
@@ -137,14 +137,14 @@ const Clients = () => {
                 onClick={() => handleOpenModal("edit", client)}
                 className="mb-2 d-block w-100"
               >
-                Edit
+                Editar
               </Button>
               <Button
                 variant="outline-danger"
                 onClick={() => handleDeleteClient(client.id)}
                 className="mb-2 d-block w-100"
               >
-                Delete
+                Borrar
               </Button>
             </Col>
           </Row>
@@ -169,7 +169,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientFirstName">
-              <Form.Label>First Name</Form.Label>
+              <Form.Label>Nombre</Form.Label>
               <Form.Control
                 type="text"
                 name="firstName"
@@ -178,7 +178,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientLastName">
-              <Form.Label>Last Name</Form.Label>
+              <Form.Label> Apellido</Form.Label>
               <Form.Control
                 type="text"
                 name="lastName"
@@ -196,7 +196,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientDniNumber">
-              <Form.Label>DNI Number</Form.Label>
+              <Form.Label>DNI </Form.Label>
               <Form.Control
                 type="text"
                 name="dniNumber"
@@ -205,7 +205,7 @@ const Clients = () => {
               />
             </Form.Group>
             <Form.Group controlId="formClientAddress">
-              <Form.Label>Address</Form.Label>
+              <Form.Label>Domicilio</Form.Label>
               <Form.Control
                 type="text"
                 name="address"
@@ -213,7 +213,7 @@ const Clients = () => {
                 onChange={handleChangeClient}
               />
             </Form.Group>
-            <Form.Group controlId="formClientPassword"> {/* Adding password field here */}
+            <Form.Group controlId="formClientPassword">
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
@@ -226,10 +226,10 @@ const Clients = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+            Cerrar
           </Button>
           <Button variant="primary" onClick={handleSaveClient}>
-            {modalMode === "add" ? "Add Client" : "Save Changes"}
+            {modalMode === "add" ? "Agregar Cliente" : "Guardar"}
           </Button>
         </Modal.Footer>
       </Modal>

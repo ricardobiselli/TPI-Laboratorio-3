@@ -71,7 +71,7 @@ const Header = ({ onSearchSaved }) => {
           <div className="d-flex flex-column flex-lg-row ms-auto">
             {user ? (
               <>
-                <div className="text-white me-3 d-none d-lg-block">Hello {user.userName}, you are {userRole}</div>
+                <div className="text-white me-3 d-none d-lg-block">Hola! {user.userName}, estas logeado como:  {userRole}</div>
                 <Button
                   variant="outline-primary"
                   className="me-2 mb-2 mb-lg-0 btn-sm"

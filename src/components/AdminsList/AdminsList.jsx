@@ -85,7 +85,7 @@ const Admins = () => {
     <Container>
       <h1 className="my-4 text-center">Manage Admins</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
-        Add Admin
+        Agregar Admin
       </Button>
 
       {admins.map((admin) => (
@@ -101,14 +101,14 @@ const Admins = () => {
                 onClick={() => handleOpenModal("edit", admin)}
                 className="mb-2 d-block w-100"
               >
-                Edit
+                Editar
               </Button>
               <Button
                 variant="outline-danger"
                 onClick={() => handleDeleteAdmin(admin.id)}
                 className="mb-2 d-block w-100"
               >
-                Delete
+                Borrar
               </Button>
             </Col>
           </Row>
@@ -152,10 +152,10 @@ const Admins = () => {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
-            Close
+            Cerrar
           </Button>
           <Button variant="primary" onClick={handleSaveAdmin}>
-            Save
+            guardar
           </Button>
         </Modal.Footer>
       </Modal>

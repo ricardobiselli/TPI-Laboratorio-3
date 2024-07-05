@@ -39,13 +39,13 @@ const Products = () => {
             <Card.Text className="flex-grow-1">{product.description}</Card.Text>
             <ListGroup variant="flush" className="mb-3">
               <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                <strong>Price:</strong> <span className="text-primary">${product.price.toFixed(2)}</span>
+                <strong>Precio:</strong> <span className="text-primary">${product.price.toFixed(2)}</span>
               </ListGroup.Item>
               <ListGroup.Item className="d-flex justify-content-between align-items-center">
                 <strong>Stock:</strong> <span>{product.stockQuantity} unidades</span>
               </ListGroup.Item>
               <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                <strong>Power Consumption:</strong> <span>{product.powerConsumption} Watts</span>
+                <strong>Consumo:</strong> <span>{product.powerConsumption} Watts</span>
               </ListGroup.Item>
             </ListGroup>
           </Card.Body>

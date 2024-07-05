@@ -103,10 +103,6 @@ const ProductManager = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    // if (name === 'powerConsumption' && parseFloat(value) < 0) {
-    //   return; 
-    // }
-
     setFormData({
       ...formData,
       [name]: value
@@ -129,7 +125,7 @@ const ProductManager = () => {
 
   return (
     <Container>
-      <h1 className="my-4 text-center">Manage Products</h1>
+      <h1 className="my-4 text-center">Administrar Productos</h1>
       <Row>
         {products.map((product) => (
           <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
@@ -140,13 +136,13 @@ const ProductManager = () => {
                 <Card.Text>{product.description}</Card.Text>
               </Card.Body>
               <ListGroup className="list-group-flush">
-                <ListGroup.Item>Price: ${product.price}</ListGroup.Item>
+                <ListGroup.Item>Precio: ${product.price}</ListGroup.Item>
                 <ListGroup.Item>Stock: {product.stockQuantity} units</ListGroup.Item>
-                <ListGroup.Item>Power Consumption: {product.powerConsumption} Watts</ListGroup.Item>
+                <ListGroup.Item> Consumo: {product.powerConsumption} Watts</ListGroup.Item>
               </ListGroup>
               <Card.Body className="d-flex justify-content-center">
-                <Button variant="outline-primary" onClick={() => handleViewDetails(product)}>Edit</Button>
-                <Button variant="outline-danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
+                <Button variant="outline-primary" onClick={() => handleViewDetails(product)}>Editar</Button>
+                <Button variant="outline-danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Borrar</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -155,25 +151,25 @@ const ProductManager = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{selectedProduct ? 'Edit Product' : 'Add Product'}</Modal.Title>
+          <Modal.Title>{selectedProduct ? 'Editar' : 'Agregar'}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form>
             <Form.Group controlId="formProductName">
-              <Form.Label>Name</Form.Label>
+              <Form.Label>Nombre</Form.Label>
               <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductCategory">
-              <Form.Label>Category</Form.Label>
+              <Form.Label>Categoria</Form.Label>
               <Form.Control type="text" name="category" value={formData.category} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductDescription">
-              <Form.Label>Description</Form.Label>
+              <Form.Label>Descripcion</Form.Label>
               <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductPrice">
-              <Form.Label>Price</Form.Label>
+              <Form.Label>Precio</Form.Label>
               <Form.Control type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductStock">
@@ -181,16 +177,16 @@ const ProductManager = () => {
               <Form.Control type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductPowerConsumption">
-              <Form.Label>Power Consumption (Watts)</Form.Label>
+              <Form.Label> Consumo (Watts)</Form.Label>
               <Form.Control type="number" name="powerConsumption" value={formData.powerConsumption} onChange={handleChange} />
             </Form.Group>
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
+          <Button variant="secondary" onClick={handleCloseModal}>Cerrar</Button>
           {selectedProduct ?
-            <Button variant="primary" onClick={handleUpdateProduct}>Update</Button> :
-            <Button variant="success" onClick={handleAddProduct}>Add</Button>
+            <Button variant="primary" onClick={handleUpdateProduct}>Actualizar</Button> :
+            <Button variant="success" onClick={handleAddProduct}>Agregar</Button>
           }
         </Modal.Footer>
       </Modal>
