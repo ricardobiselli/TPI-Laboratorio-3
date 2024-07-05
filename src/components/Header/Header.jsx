@@ -24,7 +24,7 @@ const Header = ({onSearchSaved }) => {
   };
   const handleLoginClick = () => navigate("/login");
   const handleRegisterClick = () => navigate("/register");
-  const handleAddProductClick = () => navigate("/add-product-form");
+  // const handleAddProductClick = () => navigate("/add-product-form");
   const handleCartClick = () => navigate("/shopping-cart")
   const handleAddClients = () => navigate("/clients")
   const handleAddProductManager = () => navigate("/productmanager")
@@ -40,9 +40,7 @@ const Header = ({onSearchSaved }) => {
           <Nav className="me-auto my-2 my-lg-0">
             <Nav.Link onClick={handleProductsClick}>Productos</Nav.Link>
             <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
-            {(userRole === 'admin' || userRole === 'superadmin') && (
-              <Nav.Link onClick={handleAddProductClick}>Agregar producto</Nav.Link>
-            )}
+            {(userRole === 'admin' || userRole === 'superadmin')}
              {(userRole === 'admin' || userRole === 'superadmin') && (
               <Nav.Link onClick={handleAddProductManager}>Product Manager</Nav.Link>
             )}

@@ -100,7 +100,7 @@ const Clients = () => {
     return (
       <Container>
         <Alert variant="danger">
-          Access denied. You must be an admin or superadmin to view this page.
+        Access denied! You are not allowed to view this page. Returning to Home page!
         </Alert>
       </Container>
     );
@@ -126,7 +126,7 @@ const Clients = () => {
                 {clientOrders[client.id] ? (
                   <ul>
                     {clientOrders[client.id].map(order => (
-                      <li key={order.orderId}> 
+                      <li key={order.orderId}>
                         Order ID: {order.orderId}, Total: ${order.totalAmount}
                       </li>
                     ))}

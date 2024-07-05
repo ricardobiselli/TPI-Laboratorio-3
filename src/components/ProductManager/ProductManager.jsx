@@ -4,7 +4,7 @@ import { Container, Card, ListGroup, Button, Modal, Form, Alert } from 'react-bo
 import AuthContext from '../../services/authentication/AuthContext';
 
 const ProductManager = () => {
-  const { user } = useContext(AuthContext);
+  const { user, userRole } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -115,11 +115,11 @@ const ProductManager = () => {
     return formData.name && formData.category && formData.description && formData.price && formData.stockQuantity && formData.powerConsumption;
   };
 
-  if (!user || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] !== "admin") {
+  if (!user || userRole !== "admin") {
     return (
       <Container>
         <Alert variant="danger">
-          Access denied! You are not allowed to view this page.
+        Access denied! You are not allowed to view this page. Returning to Home page!
         </Alert>
       </Container>
     );

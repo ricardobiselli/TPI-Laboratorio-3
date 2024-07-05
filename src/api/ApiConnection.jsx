@@ -91,6 +91,16 @@ export const getAdmins = async () => {
     }
 };
 
+export const addAdmin = async (adminObject) => {
+    try {
+        const response = await api.post('/admins/register', adminObject);
+        return response.data;
+    } catch (error) {
+        console.error('Error adding product:', error);
+        throw error;
+    }
+};
+
 export const updateAdmin = async (id, updatedData) => {
     try {
         const response = await api.put(`/admins/${id}`, updatedData);
