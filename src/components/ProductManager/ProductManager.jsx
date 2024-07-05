@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../api/ApiConnection';
-import { Container, Card, ListGroup, Button, Modal, Form, Alert } from 'react-bootstrap';
+import { Container, Card, ListGroup, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
 
 const ProductManager = () => {
   const [products, setProducts] = useState([]);
@@ -129,12 +129,11 @@ const ProductManager = () => {
 
   return (
     <Container>
-      <h1 className="my-4">Manage Products</h1>
-      <Button variant="success" className="mb-3" onClick={() => setShowModal(true)}>Add Product</Button>
-      <div className="row">
+      <h1 className="my-4 text-center">Manage Products</h1>
+      <Row>
         {products.map((product) => (
-          <div key={product.id} className="col-md-6 col-lg-4 mb-4">
-            <Card>
+          <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
+            <Card className="h-100 shadow-sm">
               <Card.Body>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{product.category}</Card.Subtitle>
@@ -145,14 +144,14 @@ const ProductManager = () => {
                 <ListGroup.Item>Stock: {product.stockQuantity} units</ListGroup.Item>
                 <ListGroup.Item>Power Consumption: {product.powerConsumption} Watts</ListGroup.Item>
               </ListGroup>
-              <Card.Body>
-                <Button variant="primary" onClick={() => handleViewDetails(product)}>Edit</Button>
-                <Button variant="danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
+              <Card.Body className="d-flex justify-content-center">
+                <Button variant="outline-primary" onClick={() => handleViewDetails(product)}>Edit</Button>
+                <Button variant="outline-danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Delete</Button>
               </Card.Body>
             </Card>
-          </div>
+          </Col>
         ))}
-      </div>
+      </Row>
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>

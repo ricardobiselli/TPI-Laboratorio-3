@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { getClients, addClient, updateClient, deleteClient, getClientOrders } from "../../api/ApiConnection";
-import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
+import { Container, Row, Col, Button, Modal, Form, Alert } from "react-bootstrap";
 
 const Clients = () => {
-
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
@@ -15,8 +14,9 @@ const Clients = () => {
     lastName: "",
     dniNumber: "",
     address: "",
-    password: "" 
+    password: ""
   });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchClients();
@@ -57,16 +57,19 @@ const Clients = () => {
       lastName: "",
       dniNumber: "",
       address: "",
-      password: "" 
+      password: ""
     });
     setShowModal(true);
   };
 
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setError("");
+  };
 
   const handleSaveClient = async () => {
     try {
-      console.log("Saving client with data:", currentClient); 
+      console.log("Saving client with data:", currentClient);
       if (modalMode === "add") {
         await addClient(currentClient);
       } else {
@@ -75,7 +78,8 @@ const Clients = () => {
       await fetchClients();
       setShowModal(false);
     } catch (error) {
-      console.error('Error saving client:', error);
+      console.error("Error saving client:", error);
+      setError("Error saving client. Please check your input and try again.");
     }
   };
 
@@ -85,7 +89,7 @@ const Clients = () => {
         await deleteClient(id);
         await fetchClients();
       } catch (error) {
-        console.error('Error deleting client:', error);
+        console.error("Error deleting client:", error);
       }
     }
   };
@@ -95,8 +99,9 @@ const Clients = () => {
     setCurrentClient(prevData => ({ ...prevData, [name]: value }));
   };
 
-   return (
+  return (
     <Container>
+      <h1 className="my-4 text-center">Manage Clients</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
         Add Client
       </Button>
@@ -127,10 +132,18 @@ const Clients = () => {
               </div>
             </Col>
             <Col xs="auto">
-              <Button variant="primary" className="me-2" onClick={() => handleOpenModal("edit", client)}>
+              <Button
+                variant="outline-primary"
+                onClick={() => handleOpenModal("edit", client)}
+                className="mb-2 d-block w-100"
+              >
                 Edit
               </Button>
-              <Button variant="danger" onClick={() => handleDeleteClient(client.id)}>
+              <Button
+                variant="outline-danger"
+                onClick={() => handleDeleteClient(client.id)}
+                className="mb-2 d-block w-100"
+              >
                 Delete
               </Button>
             </Col>
@@ -144,6 +157,7 @@ const Clients = () => {
           <Modal.Title>{modalMode === "add" ? "Add Client" : "Edit Client"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+          {error && <Alert variant="danger">{error}</Alert>}
           <Form>
             <Form.Group controlId="formClientUsername">
               <Form.Label>Username</Form.Label>
@@ -215,7 +229,7 @@ const Clients = () => {
             Close
           </Button>
           <Button variant="primary" onClick={handleSaveClient}>
-            Save
+            {modalMode === "add" ? "Add Client" : "Save Changes"}
           </Button>
         </Modal.Footer>
       </Modal>

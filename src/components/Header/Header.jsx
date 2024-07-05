@@ -42,12 +42,12 @@ const Header = ({ onSearchSaved }) => {
             )}
             {(userRole === 'admin' || userRole === 'superadmin') && (
               <>
-                <Nav.Link onClick={handleAddProductManager}>Product Manager</Nav.Link>
-                <Nav.Link onClick={handleAddClients}>Clientes</Nav.Link>
+                <Nav.Link onClick={handleAddProductManager}>Administrar productos</Nav.Link>
+                <Nav.Link onClick={handleAddClients}>Administrar Clientes</Nav.Link>
               </>
             )}
             {userRole === 'superadmin' && (
-              <Nav.Link onClick={handleAddAdmins}>Admins</Nav.Link>
+              <Nav.Link onClick={handleAddAdmins}> administrar Admins</Nav.Link>
             )}
           </Nav>
           
@@ -70,14 +70,17 @@ const Header = ({ onSearchSaved }) => {
           
           <div className="d-flex flex-column flex-lg-row ms-auto">
             {user ? (
-              <Button
-                variant="outline-primary"
-                className="me-2 mb-2 mb-lg-0 btn-sm"
-                style={{ maxWidth: "140px" }}
-                onClick={logout}
-              >
-                Cerrar sesión
-              </Button>
+              <>
+                <div className="text-white me-3 d-none d-lg-block">Hello {user.userName}, you are {userRole}</div>
+                <Button
+                  variant="outline-primary"
+                  className="me-2 mb-2 mb-lg-0 btn-sm"
+                  style={{ maxWidth: "140px" }}
+                  onClick={logout}
+                >
+                  Cerrar sesión
+                </Button>
+              </>
             ) : (
               <>
                 <Button

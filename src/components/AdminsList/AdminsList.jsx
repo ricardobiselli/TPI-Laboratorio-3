@@ -33,7 +33,7 @@ const Admins = () => {
       setUpdatedAdminData({
         userName: admin.userName,
         email: admin.email,
-        password: ""  
+        password: ""
       });
     } else {
       setSelectedAdmin(null);
@@ -83,6 +83,7 @@ const Admins = () => {
 
   return (
     <Container>
+      <h1 className="my-4 text-center">Manage Admins</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
         Add Admin
       </Button>
@@ -95,10 +96,18 @@ const Admins = () => {
               <div><strong>Email:</strong> {admin.email}</div>
             </Col>
             <Col xs="auto">
-              <Button variant="primary" className="me-2" onClick={() => handleOpenModal("edit", admin)}>
+              <Button
+                variant="outline-primary"
+                onClick={() => handleOpenModal("edit", admin)}
+                className="mb-2 d-block w-100"
+              >
                 Edit
               </Button>
-              <Button variant="danger" onClick={() => handleDeleteAdmin(admin.id)}>
+              <Button
+                variant="outline-danger"
+                onClick={() => handleDeleteAdmin(admin.id)}
+                className="mb-2 d-block w-100"
+              >
                 Delete
               </Button>
             </Col>
