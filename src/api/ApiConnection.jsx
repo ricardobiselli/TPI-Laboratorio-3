@@ -54,7 +54,7 @@ export const addClient = async (clientObject) => {
         const response = await api.post('/clients/register', clientObject);
         return response.data;
     } catch (error) {
-        console.error('Error adding product:', error);
+        console.error('Error adding client:', error);
         throw error;
     }
 };

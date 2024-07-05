@@ -1,23 +1,15 @@
-import { useContext, useState, useEffect } from 'react';
+import { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 import PropTypes from 'prop-types';
+import { Alert } from 'react-bootstrap';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { user, loading, userRole } = useContext(AuthContext);
-  const [redirectToHome, setRedirectToHome] = useState(false);
 
   console.log('ProtectedRoute - User:', user);
   console.log('ProtectedRoute - Loading:', loading);
   console.log('ProtectedRoute - User role:', userRole);
-
-  useEffect(() => {
-    if (user && allowedRoles && !allowedRoles.includes(userRole)) {
-      console.log('ProtectedRoute - User does not have required role, redirecting to home');
-      const timer = setTimeout(() => setRedirectToHome(true), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [user, userRole, allowedRoles]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -28,8 +20,15 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (redirectToHome) {
-    return <Navigate to="/" replace />;
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    console.log('ProtectedRoute - User does not have required role');
+    return (
+      <Alert variant="danger">
+        Access denied! You do not have the required permissions to view this page.
+        <br />
+        <Alert.Link href="/">Return to Home page</Alert.Link>
+      </Alert>
+    );
   }
 
   console.log('ProtectedRoute - Access granted');

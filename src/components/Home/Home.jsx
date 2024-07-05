@@ -1,5 +1,31 @@
+import Products from "../ProductList/ProductList"; 
+
 const Home = () => {
-  return <div>HOME</div>;
+  return (
+    <div className="container-fluid py-5 bg-light">
+      <div className="container">
+        <div className="row mb-5">
+          <div className="col-lg-8 mx-auto text-center">
+            <h1 className="display-4 mb-3">Bienvenido a nuestra tienda</h1>
+            <p className="lead text-muted">
+              Descubre nuestra selección de productos de alta calidad.
+            </p>
+          </div>
+        </div>
+        
+        <div className="row">
+          <div className="col-12">
+            <div className="card shadow-sm">
+              <div className="card-body">
+              <h2 className="h3 card-title mb-4 text-center">Nuestros Productos</h2>
+              <Products />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Home;

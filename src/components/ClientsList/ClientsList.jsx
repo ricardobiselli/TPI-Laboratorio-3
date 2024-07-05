@@ -1,23 +1,21 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { getClients, addClient, updateClient, deleteClient, getClientOrders } from "../../api/ApiConnection";
-import { Container, Row, Col, Button, Modal, Form, Alert } from "react-bootstrap";
-import AuthContext from '../../services/authentication/AuthContext';
+import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
 
 const Clients = () => {
-  const { user, userRole } = useContext(AuthContext);
 
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
   const [clientOrders, setClientOrders] = useState({});
   const [currentClient, setCurrentClient] = useState({
-    id: null,
     userName: "",
     email: "",
     firstName: "",
     lastName: "",
     dniNumber: "",
-    address: ""
+    address: "",
+    password: "" 
   });
 
   useEffect(() => {
@@ -53,13 +51,13 @@ const Clients = () => {
   const handleOpenModal = (mode, client = null) => {
     setModalMode(mode);
     setCurrentClient(client || {
-      id: null,
       userName: "",
       email: "",
       firstName: "",
       lastName: "",
       dniNumber: "",
-      address: ""
+      address: "",
+      password: "" 
     });
     setShowModal(true);
   };
@@ -68,6 +66,7 @@ const Clients = () => {
 
   const handleSaveClient = async () => {
     try {
+      console.log("Saving client with data:", currentClient); 
       if (modalMode === "add") {
         await addClient(currentClient);
       } else {
@@ -96,16 +95,7 @@ const Clients = () => {
     setCurrentClient(prevData => ({ ...prevData, [name]: value }));
   };
 
-  if (!user || (userRole !== "admin" && userRole !== "superadmin")) {
-    return (
-      <Container>
-        <Alert variant="danger">
-        Access denied! You are not allowed to view this page. Returning to Home page!
-        </Alert>
-      </Container>
-    );
-  }
-  return (
+   return (
     <Container>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
         Add Client
@@ -206,6 +196,15 @@ const Clients = () => {
                 type="text"
                 name="address"
                 value={currentClient.address}
+                onChange={handleChangeClient}
+              />
+            </Form.Group>
+            <Form.Group controlId="formClientPassword"> {/* Adding password field here */}
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                name="password"
+                value={currentClient.password}
                 onChange={handleChangeClient}
               />
             </Form.Group>

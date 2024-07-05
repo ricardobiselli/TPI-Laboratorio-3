@@ -1,10 +1,8 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../api/ApiConnection';
 import { Container, Card, ListGroup, Button, Modal, Form, Alert } from 'react-bootstrap';
-import AuthContext from '../../services/authentication/AuthContext';
 
 const ProductManager = () => {
-  const { user, userRole } = useContext(AuthContext);
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -44,7 +42,7 @@ const ProductManager = () => {
         console.error('Error adding product:', error);
       }
     } else {
-      setError('All fields must be filled out.');
+      setError('All fields must be filled out, no negative numbers allowed');
     }
   };
 
@@ -63,7 +61,7 @@ const ProductManager = () => {
         console.error(`Error updating product with ID ${selectedProduct.id}:`, error);
       }
     } else {
-      setError('All fields must be filled out.');
+      setError('All fields must be filled out, no negative numbers allowed');
     }
   };
 
@@ -105,25 +103,29 @@ const ProductManager = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // if (name === 'powerConsumption' && parseFloat(value) < 0) {
+    //   return; 
+    // }
+
     setFormData({
       ...formData,
       [name]: value
     });
   };
 
+ 
+
   const isFormValid = () => {
-    return formData.name && formData.category && formData.description && formData.price && formData.stockQuantity && formData.powerConsumption;
+    return (
+      formData.name &&
+      formData.category &&
+      formData.description &&
+      formData.price > 0 && 
+      formData.stockQuantity &&
+      formData.powerConsumption >= 0 
+    );
   };
 
-  if (!user || userRole !== "admin") {
-    return (
-      <Container>
-        <Alert variant="danger">
-        Access denied! You are not allowed to view this page. Returning to Home page!
-        </Alert>
-      </Container>
-    );
-  }
 
   return (
     <Container>

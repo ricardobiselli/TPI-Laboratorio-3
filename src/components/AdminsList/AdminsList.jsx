@@ -1,10 +1,8 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { getAdmins, addAdmin, updateAdmin, deleteAdmin } from "../../api/ApiConnection";
-import { Container, Row, Col, Button, Modal, Form, Alert } from "react-bootstrap";
-import AuthContext from '../../services/authentication/AuthContext';
+import { Container, Row, Col, Button, Modal, Form } from "react-bootstrap";
 
 const Admins = () => {
-  const { user, userRole } = useContext(AuthContext);
   const [admins, setAdmins] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalMode, setModalMode] = useState("add");
@@ -82,16 +80,6 @@ const Admins = () => {
       [name]: value
     }));
   };
-
-  if (!user || userRole !== "superadmin") {
-    return (
-      <Container>
-        <Alert variant="danger">
-          Access denied! You are not allowed to view this page. Returning to Home page!
-        </Alert>
-      </Container>
-    );
-  }
 
   return (
     <Container>

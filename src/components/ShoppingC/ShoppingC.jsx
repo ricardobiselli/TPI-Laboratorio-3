@@ -1,5 +1,5 @@
 import { useEffect, useState, useContext } from 'react';
-import { ListGroup, Button, Row, Col, Badge, Container, Alert } from 'react-bootstrap';
+import { ListGroup, Button, Row, Col, Badge, Container } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { getProductById, updateProduct, createOrder } from '../../api/ApiConnection';
 import { getCart, removeFromCart, clearCart } from '../../utils/cart';
@@ -8,7 +8,7 @@ import AuthContext from '../../services/authentication/AuthContext';
 const ShoppingC = () => {
     const [cart, setCart] = useState([]);
     const navigate = useNavigate();
-    const { user, userRole } = useContext(AuthContext);
+    const { user } = useContext(AuthContext);
 
     useEffect(() => {
         setCart(getCart());
@@ -84,15 +84,7 @@ const ShoppingC = () => {
         clearCart();
         setCart([]);
     };
-    if (!user || (userRole !== "client" )) {
-        return (
-          <Container>
-            <Alert variant="danger">
-            Access denied! You are not allowed to view this page. Returning to Home page!
-            </Alert>
-          </Container>
-        );
-      }
+   
     return (
         <Container className="d-flex flex-column align-items-center justify-content-center min-vh-100">
             <div className="w-100" style={{ maxWidth: '600px' }}>

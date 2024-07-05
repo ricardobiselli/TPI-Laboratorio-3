@@ -3,11 +3,11 @@ import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../services/authentication/AuthContext';
 
-
 const Login = () => {
     const [userNameOrEmail, setEmailOrUsername] = useState('');
     const [password, setPassword] = useState('');
     const { login } = useContext(AuthContext);
+
     const navigate = useNavigate();
 
     const emailOrUsernameRef = useRef(null);
@@ -17,8 +17,8 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const success = await login(userNameOrEmail, password);
-        
-        
+
+
         let isValid = true;
 
         if (!emailOrUsernameRef.current.value) {
@@ -40,13 +40,15 @@ const Login = () => {
         if (!isValid) {
             return;
         }
-        
-        
-        
+
+
+
         if (success) {
             console.log('Login successful');
             navigate("/");
-        } else {
+        
+        }
+        else {
             console.log('Login failed');
             window.alert("Usuario o contraseña inválidos");
         }
