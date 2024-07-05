@@ -15,6 +15,8 @@ const ProductManager = () => {
     powerConsumption: 0
   });
   const [error, setError] = useState('');
+  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
+  const [deleteProductId, setDeleteProductId] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -66,12 +68,23 @@ const ProductManager = () => {
   };
 
   const handleDeleteProduct = async (id) => {
+    setDeleteConfirmation(true);
+    setDeleteProductId(id);
+  };
+
+  const confirmDeleteProduct = async () => {
     try {
-      await deleteProduct(id);
+      await deleteProduct(deleteProductId);
       fetchProducts();
+      setDeleteConfirmation(false);
     } catch (error) {
-      console.error(`Error deleting product with ID ${id}:`, error);
+      console.error(`Error deleting product with ID ${deleteProductId}:`, error);
     }
+  };
+
+  const cancelDeleteProduct = () => {
+    setDeleteConfirmation(false);
+    setDeleteProductId('');
   };
 
   const handleViewDetails = (product) => {
@@ -109,23 +122,25 @@ const ProductManager = () => {
     });
   };
 
- 
-
   const isFormValid = () => {
     return (
       formData.name &&
       formData.category &&
       formData.description &&
       formData.price > 0 && 
-      formData.stockQuantity &&
+      formData.stockQuantity >= 0 &&
       formData.powerConsumption >= 0 
     );
   };
 
-
   return (
     <Container>
       <h1 className="my-4 text-center">Administrar Productos</h1>
+      <Row className="mb-3">
+        <Col className="text-end">
+          <Button variant="success" onClick={() => setShowModal(true)}>Agregar Producto</Button>
+        </Col>
+      </Row>
       <Row>
         {products.map((product) => (
           <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
@@ -173,7 +188,7 @@ const ProductManager = () => {
               <Form.Control type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductStock">
-              <Form.Label>Stock Quantity</Form.Label>
+              <Form.Label>Stock </Form.Label>
               <Form.Control type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} />
             </Form.Group>
             <Form.Group controlId="formProductPowerConsumption">
@@ -188,6 +203,19 @@ const ProductManager = () => {
             <Button variant="primary" onClick={handleUpdateProduct}>Actualizar</Button> :
             <Button variant="success" onClick={handleAddProduct}>Agregar</Button>
           }
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={deleteConfirmation} onHide={cancelDeleteProduct}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmar Eliminación</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>¿Estás seguro que deseas eliminar este producto?</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelDeleteProduct}>Cancelar</Button>
+          <Button variant="danger" onClick={confirmDeleteProduct}>Eliminar</Button>
         </Modal.Footer>
       </Modal>
     </Container>
