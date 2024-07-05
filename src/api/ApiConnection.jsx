@@ -110,3 +110,23 @@ export const deleteAdmin = async (id) => {
         throw error;
     }
 };
+
+export const createOrder = async (orderData) => {
+    try {
+        const response = await api.post(`/orders`, orderData);
+        return response.data;
+    } catch (error) {
+        console.error('Error creating order:', error);
+        throw error;
+    }
+};
+
+export const getClientOrders = async (id) =>{
+    try {
+        const response = await api.get(`/Orders/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching orders for client with ID ${id}:`, error);
+        throw error;
+    }
+}

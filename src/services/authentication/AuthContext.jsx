@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(null);
 
   const login = async (userNameOrEmail, password) => {
     try {
@@ -25,6 +26,7 @@ export const AuthProvider = ({ children }) => {
         const decodedToken = jwtDecode(data);
         setToken(data);
         setUser(decodedToken);
+        setUserRole(decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
         localStorage.setItem('token', data);
         console.log('Login successful, user:', decodedToken);
         return true;
@@ -42,6 +44,7 @@ export const AuthProvider = ({ children }) => {
     clearCart();
     setToken(null);
     setUser(null);
+    setUserRole(null);
     localStorage.removeItem('token');
     console.log('Logged out');
   };
@@ -55,6 +58,7 @@ export const AuthProvider = ({ children }) => {
           const decodedToken = jwtDecode(storedToken);
           setToken(storedToken);
           setUser(decodedToken);
+          setUserRole(decodedToken['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
           console.log('Token loaded from storage, user:', decodedToken);
         } catch (error) {
           console.error('Failed to decode token', error);
@@ -70,7 +74,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, token, userRole, login, logout, loading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -81,4 +85,3 @@ AuthProvider.propTypes = {
 };
 
 export default AuthContext;
-

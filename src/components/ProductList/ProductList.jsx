@@ -27,7 +27,7 @@ const Products = () => {
 
   return (
     <Container>
-      <h1 className="my-4">Product List - no login required</h1>
+      <h1 className="my-4">Available Products</h1>
       <div className="row">
         {products.map((product) => (
           <div key={product.id} className="col-md-6 col-lg-4 mb-4">

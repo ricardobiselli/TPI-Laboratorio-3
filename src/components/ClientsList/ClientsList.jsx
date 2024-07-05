@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react";
-import { getClients, addClient, updateClient, deleteClient } from "../../api/ApiConnection";
-import { Container, Row, Col, Button, Modal, Form , Alert} from "react-bootstrap";
+import { getClients, addClient, updateClient, deleteClient, getClientOrders } from "../../api/ApiConnection";
+import { Container, Row, Col, Button, Modal, Form, Alert } from "react-bootstrap";
 import AuthContext from '../../services/authentication/AuthContext';
 
-
 const Clients = () => {
-  const { user } = useContext(AuthContext);
+  const { user, userRole } = useContext(AuthContext);
 
   const [clients, setClients] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [modalMode, setModalMode] = useState("add"); 
+  const [modalMode, setModalMode] = useState("add");
+  const [clientOrders, setClientOrders] = useState({});
   const [currentClient, setCurrentClient] = useState({
     id: null,
     userName: "",
@@ -24,13 +24,29 @@ const Clients = () => {
     fetchClients();
   }, []);
 
+  useEffect(() => {
+    clients.forEach(client => fetchClientOrders(client.id));
+  }, [clients]);
+
   const fetchClients = async () => {
     try {
       const data = await getClients();
-      const clientsArray = data.$values || [];
+      const clientsArray = Array.isArray(data) ? data : data.$values || [];
       setClients(clientsArray);
     } catch (error) {
       console.error("Failed to fetch clients:", error);
+    }
+  };
+
+  const fetchClientOrders = async (clientId) => {
+    try {
+      const orders = await getClientOrders(clientId);
+      setClientOrders(prevOrders => ({
+        ...prevOrders,
+        [clientId]: Array.isArray(orders) ? orders : orders.$values || []
+      }));
+    } catch (error) {
+      console.error("Failed to fetch client orders:", error);
     }
   };
 
@@ -48,9 +64,7 @@ const Clients = () => {
     setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
+  const handleCloseModal = () => setShowModal(false);
 
   const handleSaveClient = async () => {
     try {
@@ -79,16 +93,14 @@ const Clients = () => {
 
   const handleChangeClient = (e) => {
     const { name, value } = e.target;
-    setCurrentClient(prevData => ({
-      ...prevData,
-      [name]: value
-    }));
+    setCurrentClient(prevData => ({ ...prevData, [name]: value }));
   };
-  if (!user || user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] !== "superadmin") {
+
+  if (!user || (userRole !== "admin" && userRole !== "superadmin")) {
     return (
       <Container>
         <Alert variant="danger">
-          Access denied. You must be a superadmin to view this page.
+          Access denied. You must be an admin or superadmin to view this page.
         </Alert>
       </Container>
     );
@@ -109,6 +121,20 @@ const Clients = () => {
               <div><strong>Email:</strong> {client.email}</div>
               <div><strong>DNI Number:</strong> {client.dniNumber}</div>
               <div><strong>Address:</strong> {client.address}</div>
+              <div className="mt-3">
+                <strong>Orders:</strong>
+                {clientOrders[client.id] ? (
+                  <ul>
+                    {clientOrders[client.id].map(order => (
+                      <li key={order.orderId}> 
+                        Order ID: {order.orderId}, Total: ${order.totalAmount}
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>Loading orders...</p>
+                )}
+              </div>
             </Col>
             <Col xs="auto">
               <Button variant="primary" className="me-2" onClick={() => handleOpenModal("edit", client)}>
@@ -121,6 +147,7 @@ const Clients = () => {
           </Row>
         </div>
       ))}
+
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>

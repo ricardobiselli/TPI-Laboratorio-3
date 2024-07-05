@@ -4,22 +4,20 @@ import AuthContext from './AuthContext';
 import PropTypes from 'prop-types';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, loading } = useContext(AuthContext);
+  const { user, loading, userRole } = useContext(AuthContext);
 
   console.log('ProtectedRoute - User:', user);
   console.log('ProtectedRoute - Loading:', loading);
+  console.log('ProtectedRoute - User role:', userRole);
 
   if (loading) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   if (!user) {
     console.log('ProtectedRoute - No user, redirecting to login');
     return <Navigate to="/login" replace />;
   }
-
-  const userRole = user['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
-  console.log('ProtectedRoute - User role:', userRole);
 
   if (allowedRoles && !allowedRoles.includes(userRole)) {
     console.log('ProtectedRoute - User does not have required role, redirecting to home');
