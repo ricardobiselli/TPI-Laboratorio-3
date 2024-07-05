@@ -131,12 +131,22 @@ export const createOrder = async (orderData) => {
     }
 };
 
-export const getClientOrders = async (id) =>{
+export const getClientOrders = async (clientId) =>{
     try {
-        const response = await api.get(`/Orders/${id}`);
+        const response = await api.get(`/orders/${clientId}`);
         return response.data;
     } catch (error) {
-        console.error(`Error fetching orders for client with ID ${id}:`, error);
+        console.error(`Error fetching orders for client with ID ${clientId}:`, error);
         throw error;
     }
 }
+
+export const getAllOrders = async () => {
+    try {
+        const response = await api.get('/orders');
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw error;
+    }
+};

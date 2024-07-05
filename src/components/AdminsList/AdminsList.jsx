@@ -83,7 +83,7 @@ const Admins = () => {
 
   return (
     <Container>
-      <h1 className="my-4 text-center">Manage Admins</h1>
+      <h1 className="my-4 text-center">Administrar Admins</h1>
       <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
         Agregar Admin
       </Button>

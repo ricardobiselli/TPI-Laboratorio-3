@@ -13,7 +13,9 @@ import Register from "./components/Register/Register";
 import ShoppingC from "./components/ShoppingC/ShoppingC";
 import PcBuilder from "./components/PcBuilder/PcBuilder";
 import ProductSearch from "./components/ProductSearch/ProductSearch";
+import ClientOrderHistory from "./components/ClientOrderHistory/ClientOrderHistory";
 import { useState } from "react";
+import AllOrders from "./components/AllOrdersHistory/AllOrdersHistory";
 
 
 const App = () => {
@@ -45,6 +47,9 @@ const App = () => {
             <Route path="/clients" element={<ProtectedRoute allowedRoles={['admin', 'superadmin']}><Clients /></ProtectedRoute>} />
             <Route path="/register" element={<Register />} />
             <Route path="/shopping-cart" element={<ProtectedRoute allowedRoles={['client']}><ShoppingC /></ProtectedRoute>} />
+            <Route path="/clientorderhistory" element={<ProtectedRoute allowedRoles={['client']}><ClientOrderHistory /></ProtectedRoute>} />
+            <Route path="/allorders" element={<ProtectedRoute allowedRoles={['admin', 'superadmin']}><AllOrders /></ProtectedRoute>} />
+
             <Route path="/product-search" element={<ProductSearch searchProduct={searchProduct} />} />
           </Routes>
         </BrowserRouter>

@@ -26,6 +26,13 @@ const Header = ({ onSearchSaved }) => {
   const handleAddProductManager = () => navigate("/productmanager");
   const handleAddClients = () => navigate("/clients");
   const handleAddAdmins = () => navigate("/admins");
+  const handleOrdersClick = () => {
+    if (userRole === 'admin' || userRole === 'superadmin') {
+      navigate("/allorders");
+    } else if (userRole === 'client') {
+      navigate("/clientorderhistory");
+    }
+  };
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
@@ -38,16 +45,16 @@ const Header = ({ onSearchSaved }) => {
               <>
                 <Nav.Link onClick={handleProductsClick}>Productos</Nav.Link>
                 <Nav.Link onClick={handlePcBuilderClick}>Arma tu PC</Nav.Link>
+                <Nav.Link onClick={handleOrdersClick}>Mis Órdenes</Nav.Link>
               </>
             )}
             {(userRole === 'admin' || userRole === 'superadmin') && (
               <>
                 <Nav.Link onClick={handleAddProductManager}>Administrar productos</Nav.Link>
                 <Nav.Link onClick={handleAddClients}>Administrar Clientes</Nav.Link>
+                <Nav.Link onClick={handleAddAdmins}>Administrar Admins</Nav.Link>
+                <Nav.Link onClick={handleOrdersClick}>Todas las Órdenes</Nav.Link>
               </>
-            )}
-            {userRole === 'superadmin' && (
-              <Nav.Link onClick={handleAddAdmins}> administrar Admins</Nav.Link>
             )}
           </Nav>
           
@@ -71,7 +78,7 @@ const Header = ({ onSearchSaved }) => {
           <div className="d-flex flex-column flex-lg-row ms-auto">
             {user ? (
               <>
-                <div className="text-white me-3 d-none d-lg-block">Hola! {user.userName}, estas logeado como:  {userRole}</div>
+                <div className="text-white me-3 d-none d-lg-block">Hola! {user.userName}, estás logeado como: {userRole}</div>
                 <Button
                   variant="outline-primary"
                   className="me-2 mb-2 mb-lg-0 btn-sm"
