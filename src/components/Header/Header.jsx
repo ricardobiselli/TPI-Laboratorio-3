@@ -16,7 +16,7 @@ const Header = ({ onSearchSaved }) => {
   const handleHomeClick = () => navigate("/");
   const handleProductsClick = () => navigate("/products");
   const handlePcBuilderClick = () => navigate("/pc-builder");
-  const handleSearch = () => {
+  const handleSearch = (e, accion) => {
     if (e.keyCode == 13 || accion == "click") {
       e.preventDefault();
       onSearchSaved(enteredSearch);
@@ -38,7 +38,12 @@ const Header = ({ onSearchSaved }) => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary" data-bs-theme="dark">
+    <Navbar
+      expand="lg"
+      className="bg-body-tertiary"
+      data-bs-theme="dark"
+      style={{ position: "sticky", zIndex: 100, width: "100%", top: 0.1 }}
+    >
       <Container fluid>
         <Navbar.Brand onClick={handleHomeClick}>PC Building</Navbar.Brand>
         <Navbar.Toggle aria-controls="navbarScroll" />

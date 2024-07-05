@@ -25,9 +25,6 @@ const Home = () => {
               <div className="col-12">
                 <div className="card shadow-sm">
                   <div className="card-body">
-                    <h2 className="h3 card-title mb-4 text-center">
-                      Nuestros Productos
-                    </h2>
                     <Products />
                   </div>
                 </div>

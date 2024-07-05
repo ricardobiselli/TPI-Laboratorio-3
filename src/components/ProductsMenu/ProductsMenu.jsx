@@ -1,46 +1,54 @@
-import { useState } from "react";
 import { Nav } from "react-bootstrap";
 
 const ProductsMenu = ({ setCategorySelected }) => {
+  const handleCategoryClick = (category) => {
+    setCategorySelected(category);
+  };
+
   return (
     <div
       className="d-flex flex-column flex-shrink-0 p-3 bg-light"
-      style={{ width: "250px", minHeight: "100vh" }}
+      style={{
+        width: "200px",
+        minHeight: "100vh",
+        position: "fixed",
+        left: 0,
+        top: 57,
+      }}
     >
-      <span className="fs-4">Categories</span>
-
+      <span className="fs-4">Categorías</span>
       <hr />
       <Nav className="flex-column">
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("Processor")}>
-            Processors
+          <Nav.Link onClick={() => handleCategoryClick("CPU")}>
+            Procesadores
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("Motherboard")}>
-            Motherboards
+          <Nav.Link onClick={() => handleCategoryClick("Motherboard")}>
+            Placas Madre
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("RAM")}>RAM</Nav.Link>
+          <Nav.Link onClick={() => handleCategoryClick("RAM")}>RAM</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("Storage")}>
-            Storage
+          <Nav.Link onClick={() => handleCategoryClick("Storage")}>
+            Almacenamiento
           </Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("GPU")}>GPU</Nav.Link>
+          <Nav.Link onClick={() => handleCategoryClick("GPU")}>GPU</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("PSU")}>PSU</Nav.Link>
+          <Nav.Link onClick={() => handleCategoryClick("PSU")}>PSU</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("Case")}>Case</Nav.Link>
+          <Nav.Link onClick={() => handleCategoryClick("Case")}>Case</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link onClick={() => setCategorySelected("Electronics")}>
-            Others
+          <Nav.Link onClick={() => handleCategoryClick("Electronics")}>
+            Otros
           </Nav.Link>
         </Nav.Item>
       </Nav>
