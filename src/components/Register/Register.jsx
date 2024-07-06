@@ -15,7 +15,6 @@ const Register = () => {
     const [dni, setDni] = useState("");
     const [address, setAddress] = useState("");
 
-
     const emailRef = useRef(null);
     const passRef = useRef(null);
     const passConfirmRef = useRef(null);
@@ -43,11 +42,10 @@ const Register = () => {
             { ref: emailRef, value: emailEntered },
             { ref: passRef, value: passEntered },
             { ref: passConfirmRef, value: passConfirmEntered },
-            
         ];
 
         refs.forEach(({ ref, value }) => {
-            if (!value) {
+            if (!value.trim()) {
                 ref.current.focus();
                 ref.current.style.borderColor = "red";
                 isValid = false;
@@ -58,6 +56,24 @@ const Register = () => {
 
         if (!isValid) {
             return;
+        }
+
+        if (isNaN(dni) || dni.length > 8) {
+            dniRef.current.focus();
+            dniRef.current.style.borderColor = "red";
+            window.alert("DNI debe ser un número de hasta 8 dígitos.");
+            return;
+        } else {
+            dniRef.current.style.borderColor = "";
+        }
+
+        if (!isValidEmail(emailEntered)) {
+            emailRef.current.focus();
+            emailRef.current.style.borderColor = "red";
+            window.alert("Por favor ingresa un correo electrónico válido.");
+            return;
+        } else {
+            emailRef.current.style.borderColor = "";
         }
 
         try {
@@ -115,6 +131,10 @@ const Register = () => {
         }
     };
 
+    const isValidEmail = (email) => {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
     return (
         <Container fluid className="d-flex justify-content-center align-items-center min-vh-100" style={{ marginTop: '60px' }}>
             <Row className="w-100 justify-content-center">
@@ -163,7 +183,6 @@ const Register = () => {
                                         ref={surnameRef}
                                     />
                                 </Form.Group>
-                               
                                 <Form.Group className="mb-3" controlId="formBasicDni">
                                     <Form.Label>DNI</Form.Label>
                                     <Form.Control
@@ -174,7 +193,6 @@ const Register = () => {
                                         ref={dniRef}
                                     />
                                 </Form.Group>
-                                
                                 <Form.Group className="mb-3" controlId="formBasicAddress">
                                     <Form.Label>Dirección</Form.Label>
                                     <Form.Control
@@ -208,10 +226,10 @@ const Register = () => {
                                 <Button variant="primary" type="submit" className="w-100">
                                     Enviar Registro
                                 </Button>
+                                <Button variant="secondary" onClick={clickHandler} className="w-100 mt-3">
+                                    Volver
+                                </Button>
                             </Form>
-                            <Button variant="secondary" onClick={clickHandler} className="w-100 mt-3">
-                                Volver
-                            </Button>
                         </Card.Body>
                     </Card>
                 </Col>
@@ -220,7 +238,4 @@ const Register = () => {
     );
 };
 
-
 export default Register;
-
-

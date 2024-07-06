@@ -1,22 +1,22 @@
 import { useState, useEffect } from 'react';
 import { getProducts, addProduct, updateProduct, deleteProduct } from '../../api/ApiConnection';
-import { Container, Card, ListGroup, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
+import { Container, Card, Button, Modal, Form, Alert, Row, Col } from 'react-bootstrap';
+
+const initialProductState = {
+  name: '',
+  category: '',
+  description: '',
+  price: 0,
+  stockQuantity: 0,
+  powerConsumption: 0
+};
 
 const ProductManager = () => {
   const [products, setProducts] = useState([]);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    description: '',
-    price: 0,
-    stockQuantity: 0,
-    powerConsumption: 0
-  });
-  const [error, setError] = useState('');
-  const [deleteConfirmation, setDeleteConfirmation] = useState(false);
-  const [deleteProductId, setDeleteProductId] = useState('');
+  const [currentProduct, setCurrentProduct] = useState(initialProductState);
+  const [modalMode, setModalMode] = useState("add");
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetchProducts();
@@ -25,122 +25,77 @@ const ProductManager = () => {
   const fetchProducts = async () => {
     try {
       const data = await getProducts();
-      console.log('Fetched products:', data);
       setProducts(data.$values || []);
     } catch (error) {
-      console.error('Fetch products failed:', error);
+      console.error('Failed to fetch products:', error);
     }
   };
 
-  const handleAddProduct = async () => {
-    if (isFormValid()) {
-      try {
-        const newProduct = { ...formData };
-
-        await addProduct(newProduct);
-        fetchProducts();
-        handleCloseModal();
-      } catch (error) {
-        console.error('Error adding product:', error);
-      }
-    } else {
-      setError('All fields must be filled out, no negative numbers allowed');
-    }
-  };
-
-  const handleUpdateProduct = async () => {
-    if (isFormValid()) {
-      try {
-        const updatedProduct = {
-          id: selectedProduct.id,
-          ...formData
-        };
-
-        await updateProduct(selectedProduct.id, updatedProduct);
-        fetchProducts();
-        handleCloseModal();
-      } catch (error) {
-        console.error(`Error updating product with ID ${selectedProduct.id}:`, error);
-      }
-    } else {
-      setError('All fields must be filled out, no negative numbers allowed');
-    }
-  };
-
-  const handleDeleteProduct = async (id) => {
-    setDeleteConfirmation(true);
-    setDeleteProductId(id);
-  };
-
-  const confirmDeleteProduct = async () => {
-    try {
-      await deleteProduct(deleteProductId);
-      fetchProducts();
-      setDeleteConfirmation(false);
-    } catch (error) {
-      console.error(`Error deleting product with ID ${deleteProductId}:`, error);
-    }
-  };
-
-  const cancelDeleteProduct = () => {
-    setDeleteConfirmation(false);
-    setDeleteProductId('');
-  };
-
-  const handleViewDetails = (product) => {
-    setSelectedProduct(product);
-    setFormData({
-      name: product.name,
-      category: product.category,
-      description: product.description,
-      price: product.price,
-      stockQuantity: product.stockQuantity,
-      powerConsumption: product.powerConsumption
-    });
+  const handleOpenModal = (mode, product = null) => {
+    setModalMode(mode);
+    setCurrentProduct(product || initialProductState);
     setShowModal(true);
+    setError("");
   };
 
   const handleCloseModal = () => {
-    setSelectedProduct(null);
-    setFormData({
-      name: '',
-      category: '',
-      description: '',
-      price: 0,
-      stockQuantity: 0,
-      powerConsumption: 0
-    });
     setShowModal(false);
-    setError('');
+    setError("");
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setCurrentProduct(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleSave = async () => {
+    if (isFormValid()) {
+      try {
+        if (modalMode === "add") {
+          await addProduct(currentProduct);
+        } else {
+          await updateProduct(currentProduct.id, currentProduct);
+        }
+        await fetchProducts();
+        handleCloseModal();
+      } catch (error) {
+        console.error("Error saving product:", error);
+        setError("Error saving product. Please try again.");
+      }
+    } else {
+      setError('All fields must be filled out, no negative numbers allowed');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this product?")) {
+      try {
+        await deleteProduct(id);
+        await fetchProducts();
+      } catch (error) {
+        console.error("Error deleting product:", error);
+      }
+    }
   };
 
   const isFormValid = () => {
     return (
-      formData.name &&
-      formData.category &&
-      formData.description &&
-      formData.price > 0 && 
-      formData.stockQuantity >= 0 &&
-      formData.powerConsumption >= 0 
+      currentProduct.name &&
+      currentProduct.category &&
+      currentProduct.description &&
+      currentProduct.price > 0 && 
+      currentProduct.stockQuantity >= 0 &&
+      currentProduct.powerConsumption >= 0 
     );
   };
 
   return (
     <Container>
       <h1 className="my-4 text-center">Administrar Productos</h1>
-      <Row className="mb-3">
-        <Col className="text-end">
-          <Button variant="success" onClick={() => setShowModal(true)}>Agregar Producto</Button>
-        </Col>
-      </Row>
+      <Button variant="success" className="mb-3" onClick={() => handleOpenModal("add")}>
+        Agregar Producto
+      </Button>
+
       <Row>
         {products.map((product) => (
           <Col key={product.id} xs={12} sm={6} md={4} lg={3} className="mb-4">
@@ -149,15 +104,11 @@ const ProductManager = () => {
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Subtitle className="mb-2 text-muted">{product.category}</Card.Subtitle>
                 <Card.Text>{product.description}</Card.Text>
-              </Card.Body>
-              <ListGroup className="list-group-flush">
-                <ListGroup.Item>Precio: ${product.price}</ListGroup.Item>
-                <ListGroup.Item>Stock: {product.stockQuantity} units</ListGroup.Item>
-                <ListGroup.Item> Consumo: {product.powerConsumption} Watts</ListGroup.Item>
-              </ListGroup>
-              <Card.Body className="d-flex justify-content-center">
-                <Button variant="outline-primary" onClick={() => handleViewDetails(product)}>Editar</Button>
-                <Button variant="outline-danger" className="ms-2" onClick={() => handleDeleteProduct(product.id)}>Borrar</Button>
+                <Card.Text>Precio: ${product.price}</Card.Text>
+                <Card.Text>Stock: {product.stockQuantity} units</Card.Text>
+                <Card.Text>Consumo: {product.powerConsumption} Watts</Card.Text>
+                <Button variant="outline-primary" onClick={() => handleOpenModal("edit", product)}>Editar</Button>
+                <Button variant="outline-danger" className="ms-2" onClick={() => handleDelete(product.id)}>Borrar</Button>
               </Card.Body>
             </Card>
           </Col>
@@ -166,56 +117,31 @@ const ProductManager = () => {
 
       <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>{selectedProduct ? 'Editar' : 'Agregar'}</Modal.Title>
+          <Modal.Title>{modalMode === "add" ? "Agregar Producto" : "Editar Producto"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form>
-            <Form.Group controlId="formProductName">
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group controlId="formProductCategory">
-              <Form.Label>Categoria</Form.Label>
-              <Form.Control type="text" name="category" value={formData.category} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group controlId="formProductDescription">
-              <Form.Label>Descripcion</Form.Label>
-              <Form.Control as="textarea" rows={3} name="description" value={formData.description} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group controlId="formProductPrice">
-              <Form.Label>Precio</Form.Label>
-              <Form.Control type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group controlId="formProductStock">
-              <Form.Label>Stock </Form.Label>
-              <Form.Control type="number" name="stockQuantity" value={formData.stockQuantity} onChange={handleChange} />
-            </Form.Group>
-            <Form.Group controlId="formProductPowerConsumption">
-              <Form.Label> Consumo (Watts)</Form.Label>
-              <Form.Control type="number" name="powerConsumption" value={formData.powerConsumption} onChange={handleChange} />
-            </Form.Group>
+            {Object.keys(initialProductState).map(key => (
+              <Form.Group key={key} controlId={`form${key}`}>
+                <Form.Label>{key}</Form.Label>
+                <Form.Control
+                  type={key === "description" ? "textarea" : "text"}
+                  name={key}
+                  value={currentProduct[key] || ""}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+            ))}
           </Form>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Cerrar</Button>
-          {selectedProduct ?
-            <Button variant="primary" onClick={handleUpdateProduct}>Actualizar</Button> :
-            <Button variant="success" onClick={handleAddProduct}>Agregar</Button>
-          }
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={deleteConfirmation} onHide={cancelDeleteProduct}>
-        <Modal.Header closeButton>
-          <Modal.Title>Confirmar Eliminación</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>¿Estás seguro que deseas eliminar este producto?</p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={cancelDeleteProduct}>Cancelar</Button>
-          <Button variant="danger" onClick={confirmDeleteProduct}>Eliminar</Button>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={handleSave}>
+            Guardar
+          </Button>
         </Modal.Footer>
       </Modal>
     </Container>
